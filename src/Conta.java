@@ -1,18 +1,50 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Conta {
     String nomeConta;
     String loginConta;
+
+    public ArrayList<Conta> getListaAmigos() {
+        return listaAmigos;
+    }
+
+    public void setListaAmigos(ArrayList<Conta> listaAmigos) {
+        this.listaAmigos = listaAmigos;
+    }
+
+    public ArrayList<String> getListaMsgs() {
+        return listaMsgs;
+    }
+
+    public void setListaMsgs(ArrayList<String> listaMsgs) {
+        this.listaMsgs = listaMsgs;
+    }
+
     private String senhaConta;
     Perfil perfilConta;
+
+    ArrayList<Conta> listaAmigos;
+    ArrayList<String> listaPedidoAmizade;
+    ArrayList<String> listaMsgs;
+
 
     public Conta(String nome, String login, String senha){
         this.nomeConta = nome;
         this.loginConta = login;
         this.senhaConta = senha;
+        this.listaAmigos = new ArrayList<>();
+        this.listaMsgs = new ArrayList<>();
 
 
     }
+
+    public ArrayList<String> listarPedidos(){
+        return this.listaPedidoAmizade;
+    }
+
+
+
 
     public ArrayList<String> retrieveAllConta(){
         ArrayList<String> infoConta = new ArrayList<String>();

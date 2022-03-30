@@ -2,10 +2,10 @@ import java.util.ArrayList;
 
 public class Perfil {
 
-    String cidadeNascimentoPerfil = "";
-    String cidadeAtualPerfil = "";
-    String bioPerfil = "";
-    String dataNascimentoPerfil = "";
+    String cidadeNascimentoPerfil;
+    String cidadeAtualPerfil;
+    String bioPerfil;
+    String dataNascimentoPerfil;
 
     public Perfil( String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio){
         this.cidadeAtualPerfil = cidadeAtual;
