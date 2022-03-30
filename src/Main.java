@@ -25,9 +25,21 @@ public class Main {
                     System.out.println("Digite a mensagem:");
                     String mensagemPEnvio = input.next();
                     listaUsuarios.enviarMensagem(mensagemPEnvio,user,nomeUsuario);
+                    System.out.println("Mensagem enviada");
                 }
                 else{
-                    break;
+                    System.out.println("Deseja enviar pedido de amizade? 1 - Sim | 2 - Nao");
+                    int msgAmiz = input.nextInt();
+                    if(msgAmiz==1){
+                        System.out.println("Digite o nome do usuario que voce deseja enviar");
+                        String nomeUserAmz = input.next();
+                        listaUsuarios.pedirAmizade(user,nomeUserAmz);
+                        System.out.println("Pedido de amizade enviado");
+                    }
+                    else{
+                        break;
+                    }
+
                 }
             }
             else{

@@ -18,6 +18,17 @@ public class Rede {
         this.listaUsuariosRede = listaUsuariosRede;
     }
 
+    public Conta getConta(String nomeUsuario){
+        Conta conta = new Conta();
+        for (Conta contas : listaUsuariosRede){
+
+            if(contas.getNomeConta().equals(nomeUsuario)){
+                conta = contas;
+            }
+
+        }
+        return conta;
+    }
 
 
     public void addConta(Conta contaUsuario){
@@ -25,48 +36,25 @@ public class Rede {
     }
 
     public ArrayList<String> retrieveAllInfo(String nomeUsuario){
-        // aqui teria que rodar um for each e sair comparando o nome dos usuarios
-        // quando bater, pega e retorna as informacoes
-        // tratar aqui para quando nao achar o usuario
-        ArrayList<String> informacoes = new ArrayList<>();
-
-        for (Conta contas : listaUsuariosRede){
-
-            if(contas.getNomeConta().equals(nomeUsuario)){
-                informacoes = contas.retrieveAllConta();
-            }
 
 
-        }
-
-        return informacoes;
+        return getConta(nomeUsuario).retrieveAllConta();
 
     }
 
-    public void pedirAmizade(String nomeContaEnvio, String nomeContaRecebedor){
-        for (Conta contas : listaUsuariosRede){
+    public void pedirAmizade(Conta nomeContaEnvio, String nomeContaRecebedor){
 
-            if(contas.getNomeConta().equals(nomeContaRecebedor)){
-                contas.listaPedidoAmizade.add(nomeContaEnvio);
-            }
-
-
-        }
+        getConta(nomeContaRecebedor).listaPedidoAmizade.add(nomeContaEnvio.getNomeConta());
     }
 
     public void enviarMensagem(String mensagem, Conta usuarioEnvio, String usuarioRec){
         String padraoMsg = usuarioEnvio.getNomeConta()+" enviou:\n"+mensagem;
 
-        for (Conta contas : listaUsuariosRede){
-
-            if(contas.getNomeConta().equals(usuarioRec)){
-                contas.listaMsgs.add(padraoMsg);
-            }
-
-
-        }
+        getConta(usuarioRec).listaMsgs.add(padraoMsg);
 
     }
+
+
 
 
 
