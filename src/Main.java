@@ -1,13 +1,23 @@
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        Conta usuario = new Conta("felipe","felipevsc","123asd");
+        //ArrayList<Conta> listaUsuarios = new ArrayList<Conta>();
 
-        System.out.println(usuario.getNomeConta());
-        usuario.setPerfil("maceio","mcz","30/05/2002","oi");
-        System.out.println(usuario.getPerfil());
-        usuario.perfilConta.setBioPerfil("nova bio");
-        System.out.println(usuario.getPerfil());
+        Rede listaUsuarios = new Rede();
+
+        Conta usuario1 = new Conta("felipe","felipevsc","123asd");
+        Conta usuario2 = new Conta("felipe2","felipevsc2","123asd2");
+
+
+        System.out.println(usuario2.getNomeConta());
+        usuario2.setPerfil("maceio2","mcz2","30/05/20022","oi");
+
+        listaUsuarios.addConta(usuario2);
+        System.out.println(listaUsuarios.retrieveAllInfo("felipe2"));
+
+        listaUsuarios.removerConta(usuario2);
+        System.out.println(listaUsuarios.retrieveAllInfo("felipe2"));
     }
 }

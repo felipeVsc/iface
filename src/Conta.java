@@ -14,9 +14,19 @@ public class Conta {
 
     }
 
-    public ArrayList<String> getPerfil(){
-        // aqui tem que retornar as info do perfil
+    public ArrayList<String> retrieveAllConta(){
+        ArrayList<String> infoConta = new ArrayList<String>();
+        infoConta.add(this.nomeConta);
+        infoConta.add(this.loginConta);
+        infoConta.add(this.senhaConta);
+        infoConta.add(this.perfilConta.getBioPerfil());
+        infoConta.add(this.perfilConta.getCidadeAtualPerfil());
+        infoConta.add(this.perfilConta.getCidadeNascimentoPerfil());
+        infoConta.add(this.perfilConta.getDataNascimentoPerfil());
+        return infoConta;
+    }
 
+    public ArrayList<String> getPerfil(){
         return perfilConta.retrieveAllPerfil();
     }
 
