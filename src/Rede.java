@@ -4,12 +4,58 @@ public class Rede {
 
     ArrayList<Conta> listaUsuariosRede;
     ArrayList<Comunidade> listaComunidades;
-
+    ArrayList<MensagemFeed> feedNoticias;
 
     public Rede(){
         this.listaUsuariosRede = new ArrayList<>();
         this.listaComunidades = new ArrayList<>();
+        this.feedNoticias = new ArrayList<>();
+    }
 
+    public void addMsgFeed(String msg, Conta usuarioEnvio, boolean privacidade){
+        MensagemFeed novaMsgFeed = new MensagemFeed(msg,usuarioEnvio,privacidade);
+        this.feedNoticias.add(novaMsgFeed);
+    }
+
+    public void removerMsgUsuario(Conta usuarioRemocao){
+        // tem que ver depois aqui esse erro de nao poder iterar sobre um array que esteja sendo usado num for
+        ArrayList<MensagemFeed> mensagemParaRemocao = new ArrayList<>();
+        for(int x=0;x<this.feedNoticias.size();x++){
+            if(feedNoticias.get(x).getUsuarioEnvio().equals(usuarioRemocao)){
+                mensagemParaRemocao.add(feedNoticias.get(x));
+            }
+        }
+
+        for (MensagemFeed msgFeedRemocao :
+                mensagemParaRemocao) {
+            this.feedNoticias.remove(msgFeedRemocao);
+        }
+    }
+
+    public void listarMensagens(Conta usuarioRequisicao){
+        // listar as mensagens, tomando cuidado para saber se quem enviou é amigo seu ou nao
+        for (MensagemFeed msgNoFeedMostrar :
+                this.feedNoticias) {
+            if(msgNoFeedMostrar.isPrivacidade()){
+                String msgDefaultFeed = msgNoFeedMostrar.getMensagem()+"  por: "+msgNoFeedMostrar.getUsuarioEnvio().getNomeConta();
+                System.out.println(msgDefaultFeed);
+            }
+            else{
+                if(msgNoFeedMostrar.getUsuarioEnvio().getListaAmigos().contains(usuarioRequisicao) || msgNoFeedMostrar.getUsuarioEnvio().equals(usuarioRequisicao)){
+                    String msgDefaultFeed = msgNoFeedMostrar.getMensagem()+"  por: "+msgNoFeedMostrar.getUsuarioEnvio().getNomeConta();
+                    System.out.println(msgDefaultFeed);
+                }
+            }
+
+        }
+    }
+
+    public ArrayList<MensagemFeed> getFeedNoticias() {
+        return feedNoticias;
+    }
+
+    public void setFeedNoticias(ArrayList<MensagemFeed> feedNoticias) {
+        this.feedNoticias = feedNoticias;
     }
 
     public String getAdminComunidade(Comunidade comunidade){
@@ -114,7 +160,7 @@ public class Rede {
                     msgRemover.add(msg);
                 }
             }
-
+            // acho que essas daqui vao dar erro
             for (Mensagem msgr :
                     msgRemover) {
                 user.getListaMsgs().remove(msgr);
@@ -125,6 +171,13 @@ public class Rede {
                 this.listaComunidades) {
             cmd.removerMembroComunidade(contaUsuario);
 
+        }
+
+        for (MensagemFeed msgFeedRemocao : this.feedNoticias){
+            if(msgFeedRemocao.getUsuarioEnvio().equals(contaUsuario)){
+                // remover aqui as dele
+                this.feedNoticias.remove(msgFeedRemocao);
+            }
         }
         this.listaUsuariosRede.remove(contaUsuario);
     }

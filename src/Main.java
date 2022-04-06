@@ -17,7 +17,6 @@ public class Main {
         while (true) {
             if(usuarioOn==null){
                 System.out.println("Faça o login!");
-
                 usuarioOn = processoLogin(input,listaUsuarios);
             }
             else {
@@ -153,7 +152,20 @@ public class Main {
                             System.out.println(msgDefaultComunidade);
                         }
                         break;
-
+                    case 13:
+                        // Mandar mensagen no feed de noticias
+                        System.out.println("Digite a mensagem que voce deseja enviar");
+                        String msgFeedNoticiasEnvio = input.next();
+                        System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
+                        int entradaPrivacidade = input.nextInt();
+                        boolean privMensagemFeed = entradaPrivacidade == 1;
+                        listaUsuarios.addMsgFeed(msgFeedNoticiasEnvio,usuarioOn,privMensagemFeed);
+                        System.out.println("Mensagem Enviada");
+                        break;
+                    case 14:
+                        // Listar Feed de Noticias
+                        listaUsuarios.listarMensagens(usuarioOn);
+                        break;
                 }
             }
 
