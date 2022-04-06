@@ -21,7 +21,7 @@ public class Main {
             }
             else {
                 System.out.println("Dentro, digite as opcoes");
-                System.out.println("0 - Sair da Conta\n1 - Modificar Perfil\n2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade\n4 - Enviar Pedido de Amizade\n5 - Entrar em Comunidade\n6 - Criar Comunidade\n7 - Listar Pedidos de Amizade\n8 - Listar Informacoes\n9 - Terminar Conta\n10 - Lista de Mensagens\n11 - Lista de Amigos\n12 - Mensagens Comunidade\n13 - listar mensagens comunidades");
+                System.out.println("0 - Sair da Conta\n1 - Modificar Perfil\n2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade\n4 - Enviar Pedido de Amizade\n5 - Entrar em Comunidade\n6 - Criar Comunidade\n7 - Listar Pedidos de Amizade\n8 - Listar Informacoes\n9 - Terminar Conta\n10 - Lista de Mensagens\n11 - Lista de Amigos\n12 - Mensagens Comunidade\n13 - Enviar mensagens feed | 14 - Listar Msg");
                 int opcao = input.nextInt();
                 switch (opcao) {
                     case 0:
@@ -111,6 +111,10 @@ public class Main {
                                         String mensagemPadrao = cnt.getMensagem()+" by: "+cnt.getUsuarioEnvio().getNomeConta();
                                         System.out.println(mensagemPadrao);
                                     }
+                                    else{
+                                        String entradas = (String) lista.get(x);
+                                        System.out.println(entradas);
+                                    }
 
                                 }
 
@@ -124,6 +128,7 @@ public class Main {
                         // implementar aqui para que todas as informacoes sejam removidas
                         listaUsuarios.removerConta(usuarioOn);
                         System.out.println("Usuario Removido");
+                        usuarioOn = null;
                         break;
                     case 10:
                         for (Mensagem mensagemInterna :
@@ -142,7 +147,8 @@ public class Main {
                             System.out.println(cmd.getNomeComunidade());
                         }
                         System.out.println("Qual o nome da comunidade que você deseja ver as mensagens?");
-                        String nomeComunidadeMensagem = input.next();
+                        input.nextLine();
+                        String nomeComunidadeMensagem = input.nextLine();
 
                         Comunidade comunidadeMsg = listaUsuarios.getComunidadePeloNome(nomeComunidadeMensagem);
 
@@ -268,7 +274,8 @@ public class Main {
             else if(msg==3){
 
                 System.out.println("Digite a bio");
-                bio = input.next();
+                input.nextLine();
+                bio = input.nextLine();
             }
             else if(msg==4){
                 System.out.println("Digite a data de nascimento");

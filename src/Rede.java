@@ -150,6 +150,9 @@ public class Rede {
         - Conta
         - Lista de mensagens em comunidades e amigos
          */
+        contaUsuario.removerPerfil();
+        contaUsuario.removerInfoLogin();
+
         for (Conta user :this.listaUsuariosRede) {
             user.getListaPedidoAmizade().remove(contaUsuario);
             user.getListaAmigos().remove(contaUsuario);
@@ -161,14 +164,24 @@ public class Rede {
                 }
             }
             // acho que essas daqui vao dar erro
+            ArrayList<Mensagem> msgRemocao = new ArrayList<>();
             for (Mensagem msgr :
                     msgRemover) {
-                user.getListaMsgs().remove(msgr);
+                msgRemocao.add(msgr);
+
+            }
+
+            for (Mensagem msgRemocaoUtil :
+                    msgRemocao) {
+                user.listaMsgs.remove(msgRemocao);
             }
 
         }
+        ArrayList<Comunidade> comunidadeRemocao = new ArrayList<>();
+
         for (Comunidade cmd :
                 this.listaComunidades) {
+
             cmd.removerMembroComunidade(contaUsuario);
 
         }

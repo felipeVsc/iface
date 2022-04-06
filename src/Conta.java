@@ -30,6 +30,17 @@ public class Conta {
 
     }
 
+    public void removerPerfil(){
+        setPerfil("","","","");
+
+    }
+
+    public void removerInfoLogin(){
+        setLoginConta("");
+        setSenhaConta("");
+        setNomeConta("");
+    }
+
     public void setListaPedidoAmizade(ArrayList<Conta> listaPedidoAmizade) {
         this.listaPedidoAmizade = listaPedidoAmizade;
     }
