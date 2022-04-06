@@ -80,7 +80,7 @@ public class Conta {
             System.out.println(cmd.getNomeComunidade()); // falta aqui mostrar a descricao
         }
         System.out.println("Digite o nome da comunidade que voce deseja entrar");
-        String nomeComunidadeEntrar = input.next();
+        String nomeComunidadeEntrar = input.nextLine();
         Comunidade comunidadeEntrar = retornarComunidadePeloNome(nomeComunidadeEntrar,listaCom);
         this.listaComunidadesMembro.add(comunidadeEntrar);
         comunidadeEntrar.addMembroComunidade(instancia);
