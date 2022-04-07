@@ -18,7 +18,7 @@ public class Rede {
     }
 
     public void removerMsgUsuario(Conta usuarioRemocao){
-        // tem que ver depois aqui esse erro de nao poder iterar sobre um array que esteja sendo usado num for
+
         ArrayList<MensagemFeed> mensagemParaRemocao = new ArrayList<>();
         for(int x=0;x<this.feedNoticias.size();x++){
             if(feedNoticias.get(x).getUsuarioEnvio().equals(usuarioRemocao)){

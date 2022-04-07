@@ -6,10 +6,6 @@ public class Main {
     public static void main(String[] args) {
 
         Rede listaUsuarios = new Rede();
-        /*
-        To do
-
-         */
 
         Scanner input = new Scanner(System.in);
         System.out.println("Bem-vindo.");
@@ -21,7 +17,7 @@ public class Main {
             }
             else {
                 System.out.println("Dentro, digite as opcoes");
-                System.out.println("0 - Sair da Conta\n1 - Modificar Perfil\n2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade\n4 - Enviar Pedido de Amizade\n5 - Entrar em Comunidade\n6 - Criar Comunidade\n7 - Listar Pedidos de Amizade\n8 - Listar Informacoes\n9 - Terminar Conta\n10 - Lista de Mensagens\n11 - Lista de Amigos\n12 - Mensagens Comunidade\n13 - Enviar mensagens feed | 14 - Listar Msg");
+                System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade | 4 - Enviar Pedido de Amizade | 5 - Entrar em Comunidade\n6 - Criar Comunidade | 7 - Listar Pedidos de Amizade | 8 - Listar Informacoes\n9 - Terminar Conta | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade | 13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed");
                 int opcao = input.nextInt();
                 switch (opcao) {
                     case 0:
@@ -34,7 +30,8 @@ public class Main {
                         System.out.println("Digite o nome do usuario que deseja mandar a msg");
                         String nomeUsuarioReceptor = input.next();
                         System.out.println("Digite a mensagem");
-                        String msg = input.next();
+                        input.nextLine();
+                        String msg = input.nextLine();
                         listaUsuarios.enviarMensagemConta(msg,usuarioOn,listaUsuarios.getConta(nomeUsuarioReceptor));
                         break;
                     case 3:
@@ -43,9 +40,13 @@ public class Main {
                             System.out.println(cmd.getNomeComunidade());
                         }
                         System.out.println("Qual o nome da comunidade que você deseja enviar?");
-                        String nomeComunidade = input.next();
+                        input.nextLine();
+
+                        String nomeComunidade = input.nextLine();
                         System.out.println("Qual a mensagem?");
-                        String msgCom = input.next();
+                        input.nextLine();
+
+                        String msgCom = input.nextLine();
 
                         for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
                             if(cmd.getNomeComunidade().equals(nomeComunidade)){
@@ -56,12 +57,14 @@ public class Main {
                         break;
                     case 4:
                         System.out.println("Para quem você deseja enviar o pedido?");
-                        String nomeUsuarioRecebedor = input.next();
+                        input.nextLine();
+                        String nomeUsuarioRecebedor = input.nextLine();
                         listaUsuarios.pedirAmizade(usuarioOn,listaUsuarios.getConta(nomeUsuarioRecebedor));
                         break;
                     case 5:
                         System.out.println("Digite o nome da comunidade");
-                        String nomeComNova = input.next();
+                        input.nextLine();
+                        String nomeComNova = input.nextLine();
                         Comunidade cmdEntrada = listaUsuarios.getComunidadePeloNome(nomeComNova);
                         cmdEntrada.addMembroComunidade(usuarioOn);
                         usuarioOn.listaComunidadesMembro.add(cmdEntrada);
@@ -69,9 +72,11 @@ public class Main {
                         break;
                     case 6:
                         System.out.println("Digite o nome da comunidade que deseja criar");
-                        String nomeDaComunidade = input.next();
+                        input.nextLine();
+                        String nomeDaComunidade = input.nextLine();
                         System.out.println("Digite a descricao da comunidade");
-                        String descricaoCom = input.next();
+                        input.nextLine();
+                        String descricaoCom = input.nextLine();
                         Comunidade novaCom = usuarioOn.criarComunidade(nomeDaComunidade,descricaoCom);
                         listaUsuarios.addComunidade(novaCom);
                         break;
@@ -161,7 +166,8 @@ public class Main {
                     case 13:
                         // Mandar mensagen no feed de noticias
                         System.out.println("Digite a mensagem que voce deseja enviar");
-                        String msgFeedNoticiasEnvio = input.next();
+                        input.nextLine();
+                        String msgFeedNoticiasEnvio = input.nextLine();
                         System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
                         int entradaPrivacidade = input.nextInt();
                         boolean privMensagemFeed = entradaPrivacidade == 1;
@@ -186,14 +192,22 @@ public class Main {
         String login = input.next();
         System.out.println("Digite a senha");
         String senha = input.next();
+        Conta usuario;
+        if(lista.getConta(login)!=null){
+            usuario = lista.getConta(login);
+            if(usuario.getSenhaConta().equals(senha)){
+                return usuario;
+            }else{
+                System.out.println("senha incorreta");
+                return null;
+            }
 
-        Conta usuario = lista.getConta(login);
-        if(usuario.getSenhaConta().equals(senha)){
-            return usuario;
-        }else{
-            System.out.println("senha incorreta");
+        }
+        else{
+            System.out.println("Usuario nao existente");
             return null;
         }
+
 
     }
 
@@ -214,6 +228,7 @@ public class Main {
 
             default:
                 return null;
+
         }
     }
 
@@ -222,7 +237,8 @@ public class Main {
         System.out.println("Digite o login");
         String login = input.next();
         System.out.println("Digite o nome");
-        String nome = input.next();
+        input.nextLine();
+        String nome = input.nextLine();
         System.out.println("Digite a senha");
         String senha = input.next();
         Conta usuario = new Conta(nome,login,senha);
@@ -243,9 +259,11 @@ public class Main {
 
     public static void enviarMsg(Scanner input, Conta user, Rede listaUsuarios){
         System.out.println("Digite o nome do usuario que voce deseja enviar: ");
-        String nomeUsuario = input.next();
+        input.nextLine();
+        String nomeUsuario = input.nextLine();
         System.out.println("Digite a mensagem:");
-        String mensagemPEnvio = input.next();
+        input.nextLine();
+        String mensagemPEnvio = input.nextLine();
         listaUsuarios.enviarMensagemConta(mensagemPEnvio,user,listaUsuarios.getConta(nomeUsuario));
         System.out.println("Mensagem enviada");
     }
@@ -264,12 +282,14 @@ public class Main {
             // switch-case aqui
             if (msg==1){
                 System.out.println("Digite a cidade atual");
-                cidadeAtual = input.next();
+                input.nextLine();
+                cidadeAtual = input.nextLine();
 
             }
             else if(msg==2){
                 System.out.println("Digite a cidade de nascimento");
-                cidadeNasc = input.next();
+                input.nextLine();
+                cidadeNasc = input.nextLine();
             }
             else if(msg==3){
 
@@ -278,7 +298,7 @@ public class Main {
                 bio = input.nextLine();
             }
             else if(msg==4){
-                System.out.println("Digite a data de nascimento");
+                System.out.println("Digite a data de nascimento no formato DD/MM/AAAA");
                 dtNascimento = input.next();
             }
             System.out.println("O que voce deseja modificar? 1 - Cidade Atual | 2 - Cidade de Nascimento | 3 - Bio | 4 - Data de Nascimento  | 6 - Nada");
