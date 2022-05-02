@@ -17,7 +17,14 @@ public class Main {
             }
             else {
                 System.out.println("Dentro, digite as opcoes");
-                System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade | 4 - Enviar Pedido de Amizade | 5 - Entrar em Comunidade\n6 - Criar Comunidade | 7 - Listar Pedidos de Amizade | 8 - Listar Informacoes\n9 - Terminar Conta | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade | 13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed");
+                /*
+                System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo
+                \n3 - Enviar Mensagem para Comunidade | 4 - Enviar Pedido de Amizade | 5 - Entrar em Comunidade\n6
+                 - Criar Comunidade | 7 - Listar Pedidos de Amizade | 8 - Listar Informacoes\n9 - Terminar Conta
+                 | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade |
+                13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed | 15 - Remover membro comunidade");
+                 */
+                System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade | 4 - Enviar Pedido de Amizade | 5 - Entrar em Comunidade\n6 - Criar Comunidade | 7 - Listar Pedidos de Amizade | 8 - Listar Informacoes\n9 - Terminar Conta | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade | 13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed | 15 - Remover membro comunidade\n | 16 - Requisicoes Comunidade");
                 int opcao = input.nextInt();
                 switch (opcao) {
                     case 0:
@@ -66,9 +73,9 @@ public class Main {
                         input.nextLine();
                         String nomeComNova = input.nextLine();
                         Comunidade cmdEntrada = listaUsuarios.getComunidadePeloNome(nomeComNova);
-                        cmdEntrada.addMembroComunidade(usuarioOn);
-                        usuarioOn.listaComunidadesMembro.add(cmdEntrada);
-                        System.out.println("Entrou na comunidade");
+                        // aqui tem que adicionar a parte de pedirRequisicao
+                        cmdEntrada.pedirEntradaComunidade(usuarioOn);
+                        System.out.println("O admin da comunidade recebeu o seu pedido");
                         break;
                     case 6:
                         System.out.println("Digite o nome da comunidade que deseja criar");
@@ -78,6 +85,7 @@ public class Main {
                         input.nextLine();
                         String descricaoCom = input.nextLine();
                         Comunidade novaCom = usuarioOn.criarComunidade(nomeDaComunidade,descricaoCom);
+                        novaCom.criarAdminComunidade(usuarioOn,novaCom);
                         listaUsuarios.addComunidade(novaCom);
                         break;
                     case 7:
@@ -88,6 +96,7 @@ public class Main {
                         ArrayList<ArrayList> info = usuarioOn.retrieveAllConta();
                         for (ArrayList lista: info) {
                             if(lista.size()!=0){
+                                System.out.println(lista);
                                 for(int x=0;x<lista.size();x++){
 
                                     if(lista.get(0) instanceof Conta){
@@ -104,7 +113,8 @@ public class Main {
                                         System.out.println("Comunidades");
 
                                         Comunidade cnt = (Comunidade) lista.get(x);
-                                        String adminSimNao = usuarioOn.getListaComunidadesAdmin().contains(cnt) ? "Admin":"Membro";
+
+                                        String adminSimNao = cnt.getUsuarioAdminComunidade().equals(usuarioOn.getNomeConta()) ? "Admin":"Membro";
                                         String msfDefault = cnt.getNomeComunidade()+"  status: "+adminSimNao;
                                         System.out.println(msfDefault);
 
@@ -178,12 +188,57 @@ public class Main {
                         // Listar Feed de Noticias
                         listaUsuarios.listarMensagens(usuarioOn);
                         break;
+                    case 15:
+                        // remover membro da comunidade
+                        System.out.println("Digite o nome da comunidade");
+                        String nomeComunidadeRemocao = input.next();
+                        Comunidade comunidadeRemocao = listaUsuarios.getComunidadePeloNome(nomeComunidadeRemocao);
+                        if(comunidadeRemocao.getUsuarioAdminComunidade().equals(usuarioOn.getNomeConta())){
+                            // ele eh o admin
+                            System.out.println("Digite o nome do usuario");
+                            String usuarioRemover = input.next();
+                            ContaGeral contaRemover = listaUsuarios.getConta(usuarioRemover);
+                            if(comunidadeRemocao.listaUsuariosComunidade.contains(contaRemover)){
+                                // remover
+                                comunidadeRemocao.listaUsuariosComunidade.remove(contaRemover);
+
+                            }
+                            else{
+                                System.out.println("usuario nao existe");
+                            }
+                        }else{
+                            System.out.println("Voce nao eh o administrador dessa comunidade");
+                        }
+                        break;
+                    case 16:
+                        // pedidos de entrar na comunidade
+                        System.out.println("Digite o nome da comunidade");
+                        input.nextLine();
+                        String nomeComunidadeAdmin = input.nextLine();
+                        Comunidade comunidadeAdmin = ehAdminComunidade(nomeComunidadeAdmin,usuarioOn,listaUsuarios);
+                        if(comunidadeAdmin!=null){
+                            // listar os pedidos
+
+                            comunidadeAdmin.usuarioAdminComunidade.addMembroComunidade(comunidadeAdmin);
+                        }
+                        else{
+                            System.out.println("Voce nao eh o administrador");
+                        }
+                        break;
                 }
             }
 
 
         }
 
+    }
+
+    public static Comunidade ehAdminComunidade(String nomecmd, ContaGeral usuario, Rede listaUser){
+        Comunidade comunidadeAdmin = listaUser.getComunidadePeloNome(nomecmd);
+        if(comunidadeAdmin.getUsuarioAdminComunidade().equals(usuario.getNomeConta())){
+            return comunidadeAdmin;
+        }
+        return null;
     }
 
     public static Conta fazerLogin(Rede lista){

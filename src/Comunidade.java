@@ -3,15 +3,14 @@ import java.util.ArrayList;
 public class Comunidade {
     String nomeComunidade;
     String descComunidade;
-    String usuarioAdminComunidade;
-    ArrayList<Conta> listaUsuariosComunidade;
+    ContaAdminComunidade usuarioAdminComunidade;
+    ArrayList<ContaGeral> listaUsuariosComunidade;
     ArrayList<Mensagem> listaMsgComunidade;
 
 
-    public Comunidade(String nomeComunidade, String descComunidade, String usuarioAdminComunidade){
+    public Comunidade(String nomeComunidade, String descComunidade){
         this.nomeComunidade = nomeComunidade;
         this.descComunidade = descComunidade;
-        this.usuarioAdminComunidade = usuarioAdminComunidade;
         this.listaUsuariosComunidade = new ArrayList<>();
         this.listaMsgComunidade = new ArrayList<>();
 
@@ -26,12 +25,12 @@ public class Comunidade {
     }
 
     public void enviarMsg(String msg, Conta usuarioEnvio){
-        Mensagem mensagem = new Mensagem(msg,usuarioEnvio);
+        Mensagem mensagem = new MensagemFeed(msg,usuarioEnvio,true);
         this.listaMsgComunidade.add(mensagem);
     }
 
     public void limparDadosUser(Conta usuario){
-        setUsuarioAdminComunidade("");
+        setUsuarioAdminComunidade(null);
         this.listaUsuariosComunidade.remove(usuario);
         ArrayList<Mensagem> msgRemover = new ArrayList<>();
         for (Mensagem msg :
@@ -46,9 +45,17 @@ public class Comunidade {
         }
     }
 
-    public void addMembroComunidade(Conta usuarioNovo){
-        this.listaUsuariosComunidade.add(usuarioNovo);
+    public void pedirEntradaComunidade(Conta usuarioNovo){
+        this.usuarioAdminComunidade.pedidoEntrarComunidade.add(usuarioNovo);
     }
+
+    public void criarAdminComunidade(Conta usuario, Comunidade cmd){
+        String nomeUsuario = usuario.getNomeConta();
+        String loginUsuario = usuario.getLoginConta();
+        ContaAdminComunidade adminCom = new ContaAdminComunidade(nomeUsuario,loginUsuario,cmd);
+        setUsuarioAdminComunidade(adminCom);
+    }
+
 
     public void removerMembroComunidade(Conta usuarioRemovido){
 
@@ -71,18 +78,18 @@ public class Comunidade {
     }
 
     public String getUsuarioAdminComunidade() {
-        return usuarioAdminComunidade;
+        return this.usuarioAdminComunidade.getNomeConta();
     }
 
-    public void setUsuarioAdminComunidade(String usuarioAdminComunidade) {
+    public void setUsuarioAdminComunidade(ContaAdminComunidade usuarioAdminComunidade) {
         this.usuarioAdminComunidade = usuarioAdminComunidade;
     }
 
-    public ArrayList<Conta> getListaUsuariosComunidade() {
+    public ArrayList<ContaGeral> getListaUsuariosComunidade() {
         return listaUsuariosComunidade;
     }
 
-    public void setListaUsuariosComunidade(ArrayList<Conta> listaUsuariosComunidade) {
+    public void setListaUsuariosComunidade(ArrayList<ContaGeral> listaUsuariosComunidade) {
         this.listaUsuariosComunidade = listaUsuariosComunidade;
     }
 }

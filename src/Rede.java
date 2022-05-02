@@ -134,7 +134,7 @@ public class Rede {
     }
 
     public void enviarMensagemConta(String msg, Conta usuarioEnvio, Conta usuarioRec){
-        Mensagem mensagem = new Mensagem(msg,usuarioEnvio);
+        Mensagem mensagem = new MensagemAmizade(msg,usuarioEnvio);
         usuarioRec.listaMsgs.add(mensagem);
 
     }

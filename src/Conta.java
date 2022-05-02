@@ -2,9 +2,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Conta {
-    String nomeConta;
-    String loginConta;
+public class Conta extends ContaGeral {
+
     private String senhaConta;
     Perfil perfilConta;
 
@@ -17,8 +16,7 @@ public class Conta {
     ArrayList<Comunidade> listaComunidadesMembro;
 
     public Conta(String nome, String login, String senha){
-        this.nomeConta = nome;
-        this.loginConta = login;
+        super(nome,login);
         this.senhaConta = senha;
         this.listaAmigos = new ArrayList<>();
         this.listaMsgs = new ArrayList<>();
@@ -62,9 +60,9 @@ public class Conta {
     }
 
     public Comunidade criarComunidade(String nomeComunidade, String descCom){
-        Comunidade novaComunidade = new Comunidade(nomeComunidade,descCom,this.nomeConta);
+        Comunidade novaComunidade = new Comunidade(nomeComunidade,descCom);
+        novaComunidade.setUsuarioAdminComunidade(new ContaAdminComunidade(getNomeConta(),getLoginConta(),novaComunidade));
         this.listaComunidadesMembro.add(novaComunidade);
-        this.listaComunidadesAdmin.add(novaComunidade);
         return novaComunidade;
     }
 
@@ -94,8 +92,7 @@ public class Conta {
         input.nextLine();
         String nomeComunidadeEntrar = input.nextLine();
         Comunidade comunidadeEntrar = retornarComunidadePeloNome(nomeComunidadeEntrar,listaCom);
-        this.listaComunidadesMembro.add(comunidadeEntrar);
-        comunidadeEntrar.addMembroComunidade(instancia);
+        comunidadeEntrar.pedirEntradaComunidade(instancia);
         // tratar aqui depois para o possivel erro do nome da comundiade
 
     }
@@ -187,22 +184,6 @@ public class Conta {
     public void setPerfil(String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio){
         this.perfilConta = new Perfil(cidadeAtual,cidadeNascimento,dataNascimento,bio);
 
-    }
-
-    public String getNomeConta() {
-        return nomeConta;
-    }
-
-    public void setNomeConta(String nomeConta) {
-        this.nomeConta = nomeConta;
-    }
-
-    public String getLoginConta() {
-        return loginConta;
-    }
-
-    public void setLoginConta(String loginConta) {
-        this.loginConta = loginConta;
     }
 
     public String getSenhaConta() {

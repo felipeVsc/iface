@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Mensagem {
+public abstract class Mensagem {
     String mensagem;
     Conta usuarioEnvio;
 
@@ -9,13 +9,6 @@ public class Mensagem {
         this.usuarioEnvio = usuarioEnvio;
     }
 
-    public ArrayList decodeMsg(){
-        ArrayList<String> lista = new ArrayList<>();
-        String resultado = getUsuarioEnvio().getNomeConta()+getMensagem();
-        lista.add(resultado);
-        return lista;
-
-    }
 
     public String getMensagem() {
         return mensagem;
