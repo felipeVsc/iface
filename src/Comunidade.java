@@ -24,9 +24,9 @@ public class Comunidade {
         this.listaMsgComunidade = listaMsgComunidade;
     }
 
-    public void enviarMsg(String msg, Conta usuarioEnvio){
-        Mensagem mensagem = new MensagemFeed(msg,usuarioEnvio,true);
-        this.listaMsgComunidade.add(mensagem);
+    public void enviarMsg(String msg, Conta usuarioEnvio, Comunidade c){
+        MensagemComunidade mensagem = new MensagemComunidade(msg,usuarioEnvio);
+        mensagem.enviarMensagem(mensagem,c);
     }
 
     public void limparDadosUser(Conta usuario){

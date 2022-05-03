@@ -12,21 +12,21 @@ public class Rede {
         this.feedNoticias = new ArrayList<>();
     }
 
-    public void addMsgFeed(String msg, Conta usuarioEnvio, boolean privacidade){
+    public void addMsgFeed(String msg, Conta usuarioEnvio, boolean privacidade, Rede rede){
         MensagemFeed novaMsgFeed = new MensagemFeed(msg,usuarioEnvio,privacidade);
-        this.feedNoticias.add(novaMsgFeed);
+        novaMsgFeed.enviarMensagem(novaMsgFeed,rede);
     }
 
     public void removerMsgUsuario(Conta usuarioRemocao){
 
-        ArrayList<MensagemFeed> mensagemParaRemocao = new ArrayList<>();
+        ArrayList<Mensagem> mensagemParaRemocao = new ArrayList<>();
         for(int x=0;x<this.feedNoticias.size();x++){
             if(feedNoticias.get(x).getUsuarioEnvio().equals(usuarioRemocao)){
-                mensagemParaRemocao.add(feedNoticias.get(x));
+                mensagemParaRemocao.add(this.feedNoticias.get(x));
             }
         }
 
-        for (MensagemFeed msgFeedRemocao :
+        for (Mensagem msgFeedRemocao :
                 mensagemParaRemocao) {
             this.feedNoticias.remove(msgFeedRemocao);
         }
@@ -134,8 +134,8 @@ public class Rede {
     }
 
     public void enviarMensagemConta(String msg, Conta usuarioEnvio, Conta usuarioRec){
-        Mensagem mensagem = new MensagemAmizade(msg,usuarioEnvio);
-        usuarioRec.listaMsgs.add(mensagem);
+        MensagemAmizade mensagem = new MensagemAmizade(msg,usuarioEnvio);
+        mensagem.enviarMensagem(mensagem,usuarioRec);
 
     }
 
@@ -171,10 +171,12 @@ public class Rede {
 
             }
 
-            for (Mensagem msgRemocaoUtil :
-                    msgRemocao) {
-                user.listaMsgs.remove(msgRemocao);
-            }
+            user.listaMsgs.removeAll(msgRemocao);
+//
+//            for (Mensagem msgRemocaoUtil :
+//                    msgRemocao) {
+//                user.listaMsgs.remove(msgRemocao);
+//            }
 
         }
         ArrayList<Comunidade> comunidadeRemocao = new ArrayList<>();
@@ -186,7 +188,7 @@ public class Rede {
 
         }
 
-        for (MensagemFeed msgFeedRemocao : this.feedNoticias){
+        for (Mensagem msgFeedRemocao : this.feedNoticias){
             if(msgFeedRemocao.getUsuarioEnvio().equals(contaUsuario)){
                 // remover aqui as dele
                 this.feedNoticias.remove(msgFeedRemocao);

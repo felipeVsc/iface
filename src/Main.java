@@ -51,13 +51,11 @@ public class Main {
 
                         String nomeComunidade = input.nextLine();
                         System.out.println("Qual a mensagem?");
-                        input.nextLine();
-
                         String msgCom = input.nextLine();
 
                         for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
                             if(cmd.getNomeComunidade().equals(nomeComunidade)){
-                                cmd.enviarMsg(msgCom,usuarioOn);
+                                cmd.enviarMsg(msgCom,usuarioOn,cmd);
                             }
                         }
 
@@ -181,7 +179,7 @@ public class Main {
                         System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
                         int entradaPrivacidade = input.nextInt();
                         boolean privMensagemFeed = entradaPrivacidade == 1;
-                        listaUsuarios.addMsgFeed(msgFeedNoticiasEnvio,usuarioOn,privMensagemFeed);
+                        listaUsuarios.addMsgFeed(msgFeedNoticiasEnvio,usuarioOn,privMensagemFeed,listaUsuarios);
                         System.out.println("Mensagem Enviada");
                         break;
                     case 14:
@@ -197,10 +195,11 @@ public class Main {
                             // ele eh o admin
                             System.out.println("Digite o nome do usuario");
                             String usuarioRemover = input.next();
-                            ContaGeral contaRemover = listaUsuarios.getConta(usuarioRemover);
+                            Conta contaRemover = listaUsuarios.getConta(usuarioRemover);
                             if(comunidadeRemocao.listaUsuariosComunidade.contains(contaRemover)){
                                 // remover
                                 comunidadeRemocao.listaUsuariosComunidade.remove(contaRemover);
+                                contaRemover.listaComunidadesMembro.remove(comunidadeRemocao);
 
                             }
                             else{
@@ -311,17 +310,6 @@ public class Main {
     }
 
 
-
-    public static void enviarMsg(Scanner input, Conta user, Rede listaUsuarios){
-        System.out.println("Digite o nome do usuario que voce deseja enviar: ");
-        input.nextLine();
-        String nomeUsuario = input.nextLine();
-        System.out.println("Digite a mensagem:");
-        input.nextLine();
-        String mensagemPEnvio = input.nextLine();
-        listaUsuarios.enviarMensagemConta(mensagemPEnvio,user,listaUsuarios.getConta(nomeUsuario));
-        System.out.println("Mensagem enviada");
-    }
 
     public static void modificarPerfil(Conta usuario){
         Scanner input = new Scanner(System.in);
