@@ -1,8 +1,7 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Conta extends ContaGeral {
+public class Conta extends ContaGeral implements Utils1{
 
     private String senhaConta;
     Perfil perfilConta;
@@ -20,7 +19,7 @@ public class Conta extends ContaGeral {
         this.senhaConta = senha;
         this.listaAmigos = new ArrayList<>();
         this.listaMsgs = new ArrayList<>();
-        this.listaComunidadesAdmin = new ArrayList<>();
+
         this.listaComunidadesMembro = new ArrayList<>();
         this.listaPedidoAmizade = new ArrayList<>();
         this.perfilConta = new Perfil("","","","");
@@ -28,12 +27,31 @@ public class Conta extends ContaGeral {
 
     }
 
+    @Override
+    public void removerInfo(Rede rd, Conta contaUser) {
+        // Aqui remove as informacoes da conta
+        removerPerfil();
+        removerInfoLogin();
+        this.listaComunidadesMembro.clear();
+        this.listaPedidoAmizade.clear();
+        this.listaMsgs.clear();
+        this.listaAmigos.clear();
+        // Aqui vai remover as informacoes que estao em outras contas
+        for (Conta user :rd.getListaUsuariosRede()) {
+            // formalizar os dois abaixo em
+            user.getListaPedidoAmizade().remove(contaUser);
+            user.getListaAmigos().remove(contaUser);
+            user.listaMsgs.removeIf(msg -> msg.getUsuarioEnvio().equals(contaUser));
+        }
+    }
+
+
     public void removerPerfil(){
         setPerfil("","","","");
 
     }
 
-    public void removerInfoLogin(){
+        public void removerInfoLogin(){
         setLoginConta("");
         setSenhaConta("");
         setNomeConta("");
@@ -153,8 +171,8 @@ public class Conta extends ContaGeral {
 
 
 
-
-    public ArrayList<ArrayList> retrieveAllConta(){
+    @Override
+    public ArrayList<ArrayList> recuperarInfo(Rede rede, Conta c){
         ArrayList infoConta = new ArrayList<>();
 
         infoConta.add(this.nomeConta);
@@ -172,6 +190,7 @@ public class Conta extends ContaGeral {
         infoGeral.add(this.listaAmigos);
         infoGeral.add(this.listaComunidadesMembro);
         infoGeral.add(this.listaMsgs);
+        infoGeral.add(rede.recuperarInfo(rede,c));
         return infoGeral;
     }
 

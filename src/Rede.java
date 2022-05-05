@@ -1,6 +1,7 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Rede {
+public class Rede implements Utils1{
 
     ArrayList<Conta> listaUsuariosRede;
     ArrayList<Comunidade> listaComunidades;
@@ -122,11 +123,6 @@ public class Rede {
         this.listaUsuariosRede.add(contaUsuario);
     }
 
-    public ArrayList<ArrayList> retrieveAllInfo(String nomeUsuario){
-
-        return getConta(nomeUsuario).retrieveAllConta();
-
-    }
 
     public void pedirAmizade(Conta nomeContaEnvio, Conta nomeContaRecebedor){
 
@@ -140,8 +136,8 @@ public class Rede {
     }
 
 
-
-    public void removerConta(Conta contaUsuario){
+    @Override
+    public void removerInfo(Rede rd,Conta contaUsuario){
         /*
         O que remover:
         - Das listas de amigos
@@ -150,51 +146,27 @@ public class Rede {
         - Conta
         - Lista de mensagens em comunidades e amigos
          */
-        contaUsuario.removerPerfil();
-        contaUsuario.removerInfoLogin();
-
-        for (Conta user :this.listaUsuariosRede) {
-            user.getListaPedidoAmizade().remove(contaUsuario);
-            user.getListaAmigos().remove(contaUsuario);
-            ArrayList<Mensagem> msgRemover = new ArrayList<>();
-            for (Mensagem msg :
-                    user.getListaMsgs()) {
-                if(msg.getUsuarioEnvio().equals(contaUsuario)){
-                    msgRemover.add(msg);
-                }
-            }
-            // acho que essas daqui vao dar erro
-            ArrayList<Mensagem> msgRemocao = new ArrayList<>();
-            for (Mensagem msgr :
-                    msgRemover) {
-                msgRemocao.add(msgr);
-
-            }
-
-            user.listaMsgs.removeAll(msgRemocao);
-//
-//            for (Mensagem msgRemocaoUtil :
-//                    msgRemocao) {
-//                user.listaMsgs.remove(msgRemocao);
-//            }
-
-        }
-        ArrayList<Comunidade> comunidadeRemocao = new ArrayList<>();
-
+        contaUsuario.removerInfo(rd,contaUsuario);
         for (Comunidade cmd :
                 this.listaComunidades) {
 
             cmd.removerMembroComunidade(contaUsuario);
 
         }
-
-        for (Mensagem msgFeedRemocao : this.feedNoticias){
-            if(msgFeedRemocao.getUsuarioEnvio().equals(contaUsuario)){
-                // remover aqui as dele
-                this.feedNoticias.remove(msgFeedRemocao);
-            }
-        }
+        this.feedNoticias.removeIf(msgFeed -> msgFeed.getUsuarioEnvio().equals(contaUsuario));
         this.listaUsuariosRede.remove(contaUsuario);
     }
 
+       @Override
+    public ArrayList recuperarInfo(Rede rede, Conta c) {
+        ArrayList<Mensagem> msgFeedConta = new ArrayList<>();
+           for (Mensagem msgFeed :
+                   this.feedNoticias) {
+               if (msgFeed.getUsuarioEnvio().equals(c)) {
+                   msgFeedConta.add(msgFeed);
+               }
+           }
+
+        return msgFeedConta;
+    }
 }

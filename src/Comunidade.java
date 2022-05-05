@@ -60,6 +60,8 @@ public class Comunidade {
     public void removerMembroComunidade(Conta usuarioRemovido){
 
         this.listaUsuariosComunidade.remove(usuarioRemovido);
+        this.listaMsgComunidade.removeIf(msgCom -> msgCom.getUsuarioEnvio().equals(usuarioRemovido));
+
     }
     public String getNomeComunidade() {
         return nomeComunidade;
@@ -91,5 +93,12 @@ public class Comunidade {
 
     public void setListaUsuariosComunidade(ArrayList<ContaGeral> listaUsuariosComunidade) {
         this.listaUsuariosComunidade = listaUsuariosComunidade;
+    }
+
+    @Override
+    public String toString() {
+        return "Comunidade{" +
+                "nomeComunidade='" + nomeComunidade + '\'' +
+                '}';
     }
 }

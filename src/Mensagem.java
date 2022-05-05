@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public abstract class Mensagem {
     String mensagem;
     Conta usuarioEnvio;
@@ -9,20 +7,30 @@ public abstract class Mensagem {
         this.usuarioEnvio = usuarioEnvio;
     }
 
+    @Override
+    public String toString() {
+        return "Mensagem{" +
+                "mensagem='" + mensagem + '\'' +
+                ", usuarioEnvio=" + usuarioEnvio +
+                '}';
+    }
 
     public String getMensagem() {
         return mensagem;
     }
 
     public void setMensagem(String mensagem) {
+
         this.mensagem = mensagem;
     }
 
     public Conta getUsuarioEnvio() {
+
         return usuarioEnvio;
     }
 
     public void setUsuarioEnvio(Conta usuarioEnvio) {
+
         this.usuarioEnvio = usuarioEnvio;
     }
 }

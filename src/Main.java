@@ -28,12 +28,15 @@ public class Main {
                 int opcao = input.nextInt();
                 switch (opcao) {
                     case 0:
+                        // sair da conta
                         usuarioOn = null;
                         break;
                     case 1:
+                        // modificar perfil
                         modificarPerfil(usuarioOn);
                         break;
                     case 2:
+                        // enviar msg para amigo
                         System.out.println("Digite o nome do usuario que deseja mandar a msg");
                         String nomeUsuarioReceptor = input.next();
                         System.out.println("Digite a mensagem");
@@ -42,7 +45,7 @@ public class Main {
                         listaUsuarios.enviarMensagemConta(msg,usuarioOn,listaUsuarios.getConta(nomeUsuarioReceptor));
                         break;
                     case 3:
-
+                        // enviar msg para comunidade
                         for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
                             System.out.println(cmd.getNomeComunidade());
                         }
@@ -52,21 +55,30 @@ public class Main {
                         String nomeComunidade = input.nextLine();
                         System.out.println("Qual a mensagem?");
                         String msgCom = input.nextLine();
-
+                        Comunidade cmdParaEnviar = null;
                         for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
                             if(cmd.getNomeComunidade().equals(nomeComunidade)){
-                                cmd.enviarMsg(msgCom,usuarioOn,cmd);
+                                cmdParaEnviar = cmd;
                             }
                         }
+                        if(cmdParaEnviar!=null){
+                            cmdParaEnviar.enviarMsg(msgCom,usuarioOn,cmdParaEnviar);
+                        }
+                        else{
+                            System.out.println("Voce nao faz parte dessa comunidade");
+                        }
+
 
                         break;
                     case 4:
+                        // enviar pedido de amizade
                         System.out.println("Para quem você deseja enviar o pedido?");
                         input.nextLine();
                         String nomeUsuarioRecebedor = input.nextLine();
                         listaUsuarios.pedirAmizade(usuarioOn,listaUsuarios.getConta(nomeUsuarioRecebedor));
                         break;
                     case 5:
+                        // entrar na comunidade
                         System.out.println("Digite o nome da comunidade");
                         input.nextLine();
                         String nomeComNova = input.nextLine();
@@ -76,6 +88,7 @@ public class Main {
                         System.out.println("O admin da comunidade recebeu o seu pedido");
                         break;
                     case 6:
+                        // criar comunidade
                         System.out.println("Digite o nome da comunidade que deseja criar");
                         input.nextLine();
                         String nomeDaComunidade = input.nextLine();
@@ -87,14 +100,16 @@ public class Main {
                         listaUsuarios.addComunidade(novaCom);
                         break;
                     case 7:
+                        // Listar pedido de amizades
                         System.out.println("Os seus pedidos de amizade são:");
                         usuarioOn.requisicoesAmizade();
                         break;
                     case 8:
-                        ArrayList<ArrayList> info = usuarioOn.retrieveAllConta();
+                        // Listar Informacoes
+                        ArrayList<ArrayList> info = usuarioOn.recuperarInfo(listaUsuarios,usuarioOn);
                         for (ArrayList lista: info) {
                             if(lista.size()!=0){
-                                System.out.println(lista);
+
                                 for(int x=0;x<lista.size();x++){
 
                                     if(lista.get(0) instanceof Conta){
@@ -138,24 +153,28 @@ public class Main {
 
                         break;
                     case 9:
+                        // Terminar conta
                         // implementar aqui para que todas as informacoes sejam removidas
-                        listaUsuarios.removerConta(usuarioOn);
+                        listaUsuarios.removerInfo(listaUsuarios,usuarioOn);
                         System.out.println("Usuario Removido");
                         usuarioOn = null;
                         break;
                     case 10:
+                        // lista de msgs
                         for (Mensagem mensagemInterna :
                                 usuarioOn.getListaMsgs()) {
-                            String defaultMsg = mensagemInterna.getUsuarioEnvio().getNomeConta()+" enviou: "+mensagemInterna.getMensagem();
-                            System.out.println(defaultMsg);
+//                            String defaultMsg = mensagemInterna.getUsuarioEnvio().getNomeConta()+" enviou: "+mensagemInterna.getMensagem();
+                            System.out.println(mensagemInterna.toString());
                         }
                         break;
                     case 11:
+                        // lista de amigos
                         for (Conta contaAmigoInterno : usuarioOn.getListaAmigos()){
                             System.out.println(contaAmigoInterno.getNomeConta());
                         }
                         break;
                     case 12:
+                        // mensagem das comunidades
                         for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
                             System.out.println(cmd.getNomeComunidade());
                         }
@@ -167,8 +186,9 @@ public class Main {
 
                         for (Mensagem mensagemComunidadeVer : comunidadeMsg.getListaMsgComunidade()
                                 ) {
-                            String msgDefaultComunidade = mensagemComunidadeVer.getUsuarioEnvio().getNomeConta()+"  enviou: "+mensagemComunidadeVer.getMensagem();
-                            System.out.println(msgDefaultComunidade);
+
+//                            String msgDefaultComunidade = mensagemComunidadeVer.getUsuarioEnvio().getNomeConta()+"  enviou: "+mensagemComunidadeVer.getMensagem();
+                            System.out.println(mensagemComunidadeVer.toString());
                         }
                         break;
                     case 13:
