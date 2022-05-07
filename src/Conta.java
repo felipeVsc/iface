@@ -38,7 +38,7 @@ public class Conta extends ContaGeral implements Utils1{
         this.listaAmigos.clear();
         // Aqui vai remover as informacoes que estao em outras contas
         for (Conta user :rd.getListaUsuariosRede()) {
-            // formalizar os dois abaixo em
+            // Talvez tentar juntar as duas funcoes abaixo?
             user.getListaPedidoAmizade().remove(contaUser);
             user.getListaAmigos().remove(contaUser);
             user.listaMsgs.removeIf(msg -> msg.getUsuarioEnvio().equals(contaUser));
@@ -51,7 +51,7 @@ public class Conta extends ContaGeral implements Utils1{
 
     }
 
-        public void removerInfoLogin(){
+    public void removerInfoLogin(){
         setLoginConta("");
         setSenhaConta("");
         setNomeConta("");
@@ -130,13 +130,10 @@ public class Conta extends ContaGeral implements Utils1{
             }
         }
 
-        for(Conta usuario : aceitos){
-            addRequisicaoAmizade(usuario);
-            removerRequisicaoAmizade(usuario);
-        }
-        for(Conta usuario : negados){
-            removerRequisicaoAmizade(usuario);
-        }
+
+        this.listaAmigos.addAll(aceitos);
+        this.listaPedidoAmizade.removeAll(aceitos);
+        this.listaPedidoAmizade.removeAll(negados);
 
     }
 

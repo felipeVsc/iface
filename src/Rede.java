@@ -19,18 +19,21 @@ public class Rede implements Utils1{
     }
 
     public void removerMsgUsuario(Conta usuarioRemocao){
+//
+//        ArrayList<Mensagem> mensagemParaRemocao = new ArrayList<>();
+//        for(int x=0;x<this.feedNoticias.size();x++){
+//            if(feedNoticias.get(x).getUsuarioEnvio().equals(usuarioRemocao)){
+//                mensagemParaRemocao.add(this.feedNoticias.get(x));
+//            }
+//        }
+//
+//        for (Mensagem msgFeedRemocao :
+//                mensagemParaRemocao) {
+//            this.feedNoticias.remove(msgFeedRemocao);
+//        }
 
-        ArrayList<Mensagem> mensagemParaRemocao = new ArrayList<>();
-        for(int x=0;x<this.feedNoticias.size();x++){
-            if(feedNoticias.get(x).getUsuarioEnvio().equals(usuarioRemocao)){
-                mensagemParaRemocao.add(this.feedNoticias.get(x));
-            }
-        }
-
-        for (Mensagem msgFeedRemocao :
-                mensagemParaRemocao) {
-            this.feedNoticias.remove(msgFeedRemocao);
-        }
+        // testar isso daqui
+        this.feedNoticias.removeIf(msgfeednt -> msgfeednt.getUsuarioEnvio().equals(usuarioRemocao)==true);
     }
 
     public void listarMensagens(Conta usuarioRequisicao){

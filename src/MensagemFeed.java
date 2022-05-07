@@ -14,19 +14,12 @@ public class MensagemFeed extends Mensagem implements Mensagens<Rede>{
 
     @Override
     public void enviarMensagem(Mensagem m, Rede c){
-
-        // Tenho que enviar a msg para feedNoticias de Rede
-        // Generics na Conta
         c.feedNoticias.add((MensagemFeed) m);
     }
 
 
     @Override
     public String toString() {
-        return "MensagemFeed{" +
-                "mensagem='" + mensagem + '\'' +
-                ", usuarioEnvio=" + usuarioEnvio +
-                ", privacidade=" + privacidade +
-                '}';
+        return this.getMensagem()+" por:"+this.getUsuarioEnvio().getNomeConta();
     }
 }

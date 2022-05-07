@@ -13,6 +13,6 @@ public class MensagemComunidade extends Mensagem implements Mensagens<Comunidade
 
     @Override
     public String toString() {
-        return this.mensagem+" by:"+this.usuarioEnvio.getNomeConta();
+        return this.mensagem+" por:"+this.usuarioEnvio.getNomeConta();
     }
 }
