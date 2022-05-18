@@ -127,9 +127,15 @@ public class Rede implements Utils1{
     }
 
 
-    public void pedirAmizade(Conta nomeContaEnvio, Conta nomeContaRecebedor){
+    public void pedirAmizade(Conta nomeContaEnvio, Conta nomeContaRecebedor) throws NullPointerException{
 
-        nomeContaRecebedor.listaPedidoAmizade.add(nomeContaEnvio);
+        if(nomeContaRecebedor.listaPedidoAmizade.contains(nomeContaEnvio)){
+            System.out.println("Voces ja sao amigos!");
+        }else{
+            nomeContaRecebedor.listaPedidoAmizade.add(nomeContaEnvio);
+        }
+
+
     }
 
     public void enviarMensagemConta(String msg, Conta usuarioEnvio, Conta usuarioRec){

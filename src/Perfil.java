@@ -1,4 +1,7 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Perfil {
 
@@ -7,10 +10,11 @@ public class Perfil {
     String bioPerfil;
     String dataNascimentoPerfil;
 
-    public Perfil( String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio){
+    public Perfil( String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio) throws ParseException {
         this.cidadeAtualPerfil = cidadeAtual;
         this.cidadeNascimentoPerfil = cidadeNascimento;
-        this.dataNascimentoPerfil = dataNascimento;
+        Date data = new SimpleDateFormat("dd/MM/yy").parse(dataNascimento);
+        this.dataNascimentoPerfil = new SimpleDateFormat("MM-dd-yyyy").format(data);
         this.bioPerfil = bio;
 
     }
@@ -54,7 +58,8 @@ public class Perfil {
         return dataNascimentoPerfil;
     }
 
-    public void setDataNascimentoPerfil(String dataNascimentoPerfil) {
-        this.dataNascimentoPerfil = dataNascimentoPerfil;
+    public void setDataNascimentoPerfil(String dataNascimentoPerfil) throws ParseException{
+        Date data = new SimpleDateFormat("dd/MM/yy").parse(dataNascimentoPerfil);
+        this.dataNascimentoPerfil = new SimpleDateFormat("MM-dd-yyyy").format(data);
     }
 }

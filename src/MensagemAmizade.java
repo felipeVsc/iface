@@ -13,7 +13,7 @@ public class MensagemAmizade extends Mensagem implements Mensagens<Conta>{
 //        return lista;
 //    }
     @Override
-    public void enviarMensagem(Mensagem msgUsuarioRecebedor, Conta usuarioRecebedor){
+    public void enviarMensagem(Mensagem msgUsuarioRecebedor, Conta usuarioRecebedor) throws NullPointerException{
         
         usuarioRecebedor.listaMsgs.add(msgUsuarioRecebedor);
     }

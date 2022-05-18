@@ -1,4 +1,6 @@
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -44,7 +46,13 @@ public class Main {
                         System.out.println("Digite a mensagem");
                         input.nextLine();
                         String msg = input.nextLine();
-                        listaUsuarios.enviarMensagemConta(msg,usuarioOn,listaUsuarios.getConta(nomeUsuarioReceptor));
+                        try{
+                            listaUsuarios.enviarMensagemConta(msg,usuarioOn,listaUsuarios.getConta(nomeUsuarioReceptor));
+                        } catch(NullPointerException e){
+                            System.out.println("Usuario nao existente");
+                            break;
+                        }
+
                         break;
                     case 3:
                         // enviar msg para comunidade
@@ -58,6 +66,7 @@ public class Main {
                         System.out.println("Qual a mensagem?");
                         String msgCom = input.nextLine();
                         Comunidade cmdParaEnviar = null;
+                        // get comunidade pelo nome
                         for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
                             if(cmd.getNomeComunidade().equals(nomeComunidade)){
                                 cmdParaEnviar = cmd;
@@ -77,7 +86,16 @@ public class Main {
                         System.out.println("Para quem você deseja enviar o pedido de amizade?");
                         input.nextLine();
                         String nomeUsuarioRecebedor = input.nextLine();
-                        listaUsuarios.pedirAmizade(usuarioOn,listaUsuarios.getConta(nomeUsuarioRecebedor));
+                        try{
+                            listaUsuarios.pedirAmizade(usuarioOn,listaUsuarios.getConta(nomeUsuarioRecebedor));
+                        } catch (NullPointerException e){
+                            System.out.println("Usuario nao existe, digite novamente");
+                            System.out.println("Para quem você deseja enviar o pedido de amizade?");
+                            input.nextLine();
+                            nomeUsuarioRecebedor = input.nextLine();
+                        }
+
+
                         break;
                     case 5:
                         // entrar na comunidade
@@ -201,7 +219,17 @@ public class Main {
                         input.nextLine();
                         String msgFeedNoticiasEnvio = input.nextLine();
                         System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
-                        int entradaPrivacidade = input.nextInt();
+                        int entradaPrivacidade = 0;
+                        try{
+                            entradaPrivacidade = input.nextInt();
+
+                        } catch (InputMismatchException e){
+                            System.out.println("Erro na entrada");
+                            input.next();
+                            break;
+                        }
+
+
                         boolean privMensagemFeed = entradaPrivacidade == 1;
                         listaUsuarios.addMsgFeed(msgFeedNoticiasEnvio,usuarioOn,privMensagemFeed,listaUsuarios);
                         System.out.println("Mensagem Enviada");
@@ -352,29 +380,38 @@ public class Main {
                 System.out.println("Digite a cidade atual");
                 input.nextLine();
                 cidadeAtual = input.nextLine();
-
+                usuario.perfilConta.setCidadeAtualPerfil(cidadeAtual);
             }
             else if(msg==2){
                 System.out.println("Digite a cidade de nascimento");
                 input.nextLine();
                 cidadeNasc = input.nextLine();
+                usuario.perfilConta.setCidadeNascimentoPerfil(cidadeNasc);
             }
             else if(msg==3){
 
                 System.out.println("Digite a bio");
                 input.nextLine();
                 bio = input.nextLine();
+                usuario.perfilConta.setBioPerfil(bio);
             }
             else if(msg==4){
                 System.out.println("Digite a data de nascimento no formato DD/MM/AAAA");
                 dtNascimento = input.next();
+                try{
+                    usuario.perfilConta.setDataNascimentoPerfil(dtNascimento);
+                } catch (ParseException e){
+                    System.out.println("Data de nascimento no formato errado!");
+                }
+
+
             }
             System.out.println("O que voce deseja modificar? 1 - Cidade Atual | 2 - Cidade de Nascimento | 3 - Bio | 4 - Data de Nascimento  | 6 - Nada");
             msg = input.nextInt();
 
         }
 
-        usuario.setPerfil(cidadeAtual,cidadeNasc,dtNascimento,bio);
+
 
     }
 }

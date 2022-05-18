@@ -1,4 +1,6 @@
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Conta extends ContaGeral implements Utils1{
@@ -22,7 +24,7 @@ public class Conta extends ContaGeral implements Utils1{
 
         this.listaComunidadesMembro = new ArrayList<>();
         this.listaPedidoAmizade = new ArrayList<>();
-        this.perfilConta = new Perfil("","","","");
+        this.perfilConta = null;
 
 
     }
@@ -47,7 +49,7 @@ public class Conta extends ContaGeral implements Utils1{
 
 
     public void removerPerfil(){
-        setPerfil("","","","");
+        this.perfilConta = null;
 
     }
 
@@ -121,13 +123,21 @@ public class Conta extends ContaGeral implements Utils1{
         for (Conta usuario : this.listaPedidoAmizade){
             System.out.println(usuario.getNomeConta());
             System.out.println("Deseja aceitar? 1 - Sim | 2 - Nao");
-            int aceite = input.nextInt();
-            if(aceite==1){
-                aceitos.add(usuario);
+            int aceite = 2;
+            try{
+                aceite = input.nextInt();
+            } catch (InputMismatchException e){
+                System.out.println("Digite uma das opcoes: 1 - Sim | 2 - Nao");
+            }finally {
+                if(aceite==1){
+                    aceitos.add(usuario);
+                }
+                else{
+                    negados.add(usuario);
+                }
             }
-            else{
-                negados.add(usuario);
-            }
+
+
         }
 
 
@@ -197,7 +207,7 @@ public class Conta extends ContaGeral implements Utils1{
         return perfilConta.retrieveAllPerfil();
     }
 
-    public void setPerfil(String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio){
+    public void setPerfil(String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio) throws ParseException{
         this.perfilConta = new Perfil(cidadeAtual,cidadeNascimento,dataNascimento,bio);
 
     }
