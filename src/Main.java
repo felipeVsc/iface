@@ -1,3 +1,5 @@
+import excecoes.EntradaIncorretaException;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -8,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         Rede listaUsuarios = new Rede();
-
+        Validacoes validacao = new Validacoes();
         Scanner input = new Scanner(System.in);
         System.out.println("Bem-vindo.");
         Conta usuarioOn = processoLogin(input,listaUsuarios);
@@ -339,15 +341,57 @@ public class Main {
         }
     }
 
-    public static Conta addConta(Rede lista){
+    public static String criarLogin(Scanner input) throws EntradaIncorretaException {
+        String login = input.next();
+        // checar se nao tem espacos aqui e caracteres
+        if(login.contains(" ") && !login.matches("/^[A-Za-z0-9 ]+$/")){
+            throw new EntradaIncorretaException("Entrada incorreta, por favor nao utilizar espacos");
+        }
+        return login;
+    }
+
+    public static String criarNome(Scanner input) throws EntradaIncorretaException{
+        String nome = input.nextLine();
+        // AJEITAR ISSO DAQUI DEPOIS PARA O BUG DO ESPAÇO
+        // regex
+        if(!nome.matches("/^[A-Za-z0-9 ]+$/")){
+            throw new EntradaIncorretaException("Tem caractere especial no seu nome!");
+        }
+        return nome;
+    }
+
+    public static String criarSenha(Scanner input) throws EntradaIncorretaException{
+        String senha = input.next();
+        if(senha.contains(" ")){
+            throw new EntradaIncorretaException("Tem espaco na sua senha!");
+        }
+
+        return senha;
+
+    }
+    public static Conta addConta(Rede lista) throws EntradaIncorretaException {
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o login");
-        String login = input.next();
+        String login,nome,senha;
+        try{
+            login = criarLogin(input);
+        } catch (EntradaIncorretaException e){
+            login = criarLogin(input);
+        }
         System.out.println("Digite o nome");
-        input.nextLine();
-        String nome = input.nextLine();
+        try{
+            nome = criarNome(input);
+        }catch (EntradaIncorretaException e){
+            nome = criarNome(input);
+        }
         System.out.println("Digite a senha");
-        String senha = input.next();
+        try{
+            senha = criarSenha(input);
+        }catch (EntradaIncorretaException e){
+            senha = criarSenha(input);
+        }
+
+
         Conta usuario = new Conta(nome,login,senha);
 
         System.out.println("Deseja mudar o perfil? 1 - Sim | 2 - Nao");
@@ -367,35 +411,29 @@ public class Main {
     public static void modificarPerfil(Conta usuario){
         Scanner input = new Scanner(System.in);
 
-        System.out.println("O que voce deseja modificar? 1 - Cidade Atual | 2 - Cidade de Nascimento | 3 - Bio | 4 - Data de Nascimento  | 6 - Nada");
+        System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
         int msg = input.nextInt();
-        String cidadeAtual = "";
-        String cidadeNasc = "";
+
+        String numCpf = "";
         String bio = "";
         String dtNascimento = "";
 
         while(msg!=6){
             // switch-case aqui
             if (msg==1){
-                System.out.println("Digite a cidade atual");
+                System.out.println("Digite o CPF");
                 input.nextLine();
-                cidadeAtual = input.nextLine();
-                usuario.perfilConta.setCidadeAtualPerfil(cidadeAtual);
+                numCpf = input.nextLine();
+                usuario.perfilConta.setNumCpfUsuario(numCpf);
             }
             else if(msg==2){
-                System.out.println("Digite a cidade de nascimento");
-                input.nextLine();
-                cidadeNasc = input.nextLine();
-                usuario.perfilConta.setCidadeNascimentoPerfil(cidadeNasc);
-            }
-            else if(msg==3){
 
                 System.out.println("Digite a bio");
                 input.nextLine();
                 bio = input.nextLine();
                 usuario.perfilConta.setBioPerfil(bio);
             }
-            else if(msg==4){
+            else if(msg==3){
                 System.out.println("Digite a data de nascimento no formato DD/MM/AAAA");
                 dtNascimento = input.next();
                 try{
@@ -406,7 +444,7 @@ public class Main {
 
 
             }
-            System.out.println("O que voce deseja modificar? 1 - Cidade Atual | 2 - Cidade de Nascimento | 3 - Bio | 4 - Data de Nascimento  | 6 - Nada");
+            System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
             msg = input.nextInt();
 
         }

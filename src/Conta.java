@@ -186,8 +186,7 @@ public class Conta extends ContaGeral implements Utils1{
         infoConta.add(this.loginConta);
         infoConta.add(this.senhaConta);
         infoConta.add(this.perfilConta.getBioPerfil());
-        infoConta.add(this.perfilConta.getCidadeAtualPerfil());
-        infoConta.add(this.perfilConta.getCidadeNascimentoPerfil());
+        infoConta.add(this.perfilConta.getNumCpfUsuario());
         infoConta.add(this.perfilConta.getDataNascimentoPerfil());
 
         ArrayList<ArrayList> infoGeral = new ArrayList<>();
@@ -207,8 +206,8 @@ public class Conta extends ContaGeral implements Utils1{
         return perfilConta.retrieveAllPerfil();
     }
 
-    public void setPerfil(String cidadeAtual, String cidadeNascimento, String dataNascimento, String bio) throws ParseException{
-        this.perfilConta = new Perfil(cidadeAtual,cidadeNascimento,dataNascimento,bio);
+    public void setPerfil(String numCpfUsuario,  String dataNascimento, String bio) throws ParseException{
+        this.perfilConta = new Perfil(numCpfUsuario,dataNascimento,bio);
 
     }
 
