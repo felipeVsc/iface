@@ -1,3 +1,5 @@
+import excecoes.NumCpfInvalidoException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class Perfil {
     }
 
     public ArrayList<String> retrieveAllPerfil(){
-        ArrayList<String> infoUsuarios = new ArrayList<String>();
+        ArrayList<String> infoUsuarios = new ArrayList<>();
         infoUsuarios.add(this.numCpfUsuario);
         infoUsuarios.add(this.bioPerfil);
         infoUsuarios.add(this.dataNascimentoPerfil);
@@ -34,8 +36,13 @@ public class Perfil {
         return this.numCpfUsuario;
     }
 
-    public void setNumCpfUsuario(String numCpfUsuarioNovo){
-        this.numCpfUsuario = numCpfUsuarioNovo;
+    public void setNumCpfUsuario(String numCpfUsuarioNovo) throws NumCpfInvalidoException {
+        if(!numCpfUsuarioNovo.matches("\"[0-9]{3}\\\\.?[0-9]{3}\\\\.?[0-9]{3}\\\\-?[0-9]{2}\"")){
+            throw new NumCpfInvalidoException("CPF INVALIDO");
+        }else {
+            this.numCpfUsuario = numCpfUsuarioNovo;
+        }
+
     }
 
     public String getBioPerfil() {
@@ -50,8 +57,14 @@ public class Perfil {
         return dataNascimentoPerfil;
     }
 
-    public void setDataNascimentoPerfil(String dataNascimentoPerfil) throws ParseException{
-        Date data = new SimpleDateFormat("dd/MM/yy").parse(dataNascimentoPerfil);
-        this.dataNascimentoPerfil = new SimpleDateFormat("MM-dd-yyyy").format(data);
+    public void setDataNascimentoPerfil(String dataNascimentoPerfil){
+        try{
+            Date data = new SimpleDateFormat("dd/MM/yy").parse(dataNascimentoPerfil);
+            this.dataNascimentoPerfil = new SimpleDateFormat("MM-dd-yyyy").format(data);
+
+        } catch (ParseException e){
+            System.out.println("Formato incorrento, tente novamente");
+        }
+
     }
 }

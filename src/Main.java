@@ -1,16 +1,16 @@
 import excecoes.EntradaIncorretaException;
+import excecoes.NumCpfInvalidoException;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws EntradaIncorretaException {
 
         Rede listaUsuarios = new Rede();
-        Validacoes validacao = new Validacoes();
+
         Scanner input = new Scanner(System.in);
         System.out.println("Bem-vindo.");
         Conta usuarioOn = processoLogin(input,listaUsuarios);
@@ -91,12 +91,8 @@ public class Main {
                         try{
                             listaUsuarios.pedirAmizade(usuarioOn,listaUsuarios.getConta(nomeUsuarioRecebedor));
                         } catch (NullPointerException e){
-                            System.out.println("Usuario nao existe, digite novamente");
-                            System.out.println("Para quem você deseja enviar o pedido de amizade?");
-                            input.nextLine();
-                            nomeUsuarioRecebedor = input.nextLine();
+                            System.out.println("Usuario nao existe");
                         }
-
 
                         break;
                     case 5:
@@ -104,10 +100,18 @@ public class Main {
                         System.out.println("Digite o nome da comunidade que deseja entrar");
                         input.nextLine();
                         String nomeComNova = input.nextLine();
-                        Comunidade cmdEntrada = listaUsuarios.getComunidadePeloNome(nomeComNova);
-                        // aqui tem que adicionar a parte de pedirRequisicao
-                        cmdEntrada.pedirEntradaComunidade(usuarioOn);
-                        System.out.println("O admin da comunidade recebeu o seu pedido");
+                        try{
+                            Comunidade cmdEntrada = listaUsuarios.getComunidadePeloNome(nomeComNova);
+                            if (cmdEntrada==null){
+                                throw new EntradaIncorretaException("Comunidade nao existe");
+                            } else {
+                                cmdEntrada.pedirEntradaComunidade(usuarioOn);
+                                System.out.println("O admin da comunidade recebeu o seu pedido");
+                            }
+                        } catch (EntradaIncorretaException e){
+                            System.out.println(e.getMessage());
+                        }
+
                         break;
                     case 6:
                         // criar comunidade
@@ -205,34 +209,34 @@ public class Main {
                         System.out.println("Qual o nome da comunidade que você deseja ver as mensagens?");
                         input.nextLine();
                         String nomeComunidadeMensagem = input.nextLine();
-
-                        Comunidade comunidadeMsg = listaUsuarios.getComunidadePeloNome(nomeComunidadeMensagem);
-
-                        for (Mensagem mensagemComunidadeVer : comunidadeMsg.getListaMsgComunidade()
+                        try{
+                            Comunidade comunidadeMsg = listaUsuarios.getComunidadePeloNome(nomeComunidadeMensagem);
+                            if (comunidadeMsg==null){
+                                throw new EntradaIncorretaException("Comunidade nao existe");
+                            }
+                            else{
+                                for (Mensagem mensagemComunidadeVer : comunidadeMsg.getListaMsgComunidade()
                                 ) {
 
 //                            String msgDefaultComunidade = mensagemComunidadeVer.getUsuarioEnvio().getNomeConta()+"  enviou: "+mensagemComunidadeVer.getMensagem();
-                            System.out.println(mensagemComunidadeVer.toString());
+                                    System.out.println(mensagemComunidadeVer.toString());
+                                }
+                            }
+                        } catch (EntradaIncorretaException e) {
+                            System.out.println(e.getMessage());
                         }
+
+
                         break;
                     case 13:
                         // Mandar mensagen no feed de noticias
+
                         System.out.println("Digite a mensagem que voce deseja enviar");
                         input.nextLine();
                         String msgFeedNoticiasEnvio = input.nextLine();
                         System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
-                        int entradaPrivacidade = 0;
-                        try{
-                            entradaPrivacidade = input.nextInt();
 
-                        } catch (InputMismatchException e){
-                            System.out.println("Erro na entrada");
-                            input.next();
-                            break;
-                        }
-
-
-                        boolean privMensagemFeed = entradaPrivacidade == 1;
+                        boolean privMensagemFeed = gerarPrivacidade(input) == 1;
                         listaUsuarios.addMsgFeed(msgFeedNoticiasEnvio,usuarioOn,privMensagemFeed,listaUsuarios);
                         System.out.println("Mensagem Enviada");
                         break;
@@ -245,7 +249,18 @@ public class Main {
                         // remover membro da comunidade
                         System.out.println("Remocao de membro; Digite o nome da comunidade");
                         String nomeComunidadeRemocao = input.next();
-                        Comunidade comunidadeRemocao = listaUsuarios.getComunidadePeloNome(nomeComunidadeRemocao);
+                        Comunidade comunidadeRemocao = null;
+                        try{
+                            comunidadeRemocao = listaUsuarios.getComunidadePeloNome(nomeComunidadeRemocao);
+                            if(comunidadeRemocao==null){
+                                throw new EntradaIncorretaException("Comunidade nao existe");
+                            }
+
+                        } catch (EntradaIncorretaException e){
+                            System.out.println(e.getMessage());
+                            break;
+                        }
+
                         if(comunidadeRemocao.getUsuarioAdminComunidade().equals(usuarioOn.getNomeConta())){
                             // ele eh o admin
                             System.out.println("Digite o nome do usuario a ser removido");
@@ -287,6 +302,22 @@ public class Main {
 
     }
 
+
+    public static int gerarPrivacidade(Scanner input) throws EntradaIncorretaException{
+        int priv = input.nextInt();
+        try{
+            if(priv!=1 && priv!=2) {
+                throw new EntradaIncorretaException("Entrada incorreta, tente novamente");
+
+            }
+        } catch (EntradaIncorretaException e) {
+            System.out.println(e.getMessage());
+            return gerarPrivacidade(input);
+        }
+
+        return priv;
+    }
+
     public static Comunidade ehAdminComunidade(String nomecmd, ContaGeral usuario, Rede listaUser){
         Comunidade comunidadeAdmin = listaUser.getComunidadePeloNome(nomecmd);
         if(comunidadeAdmin.getUsuarioAdminComunidade().equals(usuario.getNomeConta())){
@@ -320,7 +351,7 @@ public class Main {
 
     }
 
-    public static Conta processoLogin(Scanner input, Rede listaUsuarios){
+    public static Conta processoLogin(Scanner input, Rede listaUsuarios) throws EntradaIncorretaException {
         System.out.println("Deseja entrar ou se cadastrar? 1 - Logar | 2 - Criar conta");
         int opcaoLogin = input.nextInt();
         Conta usuarioOn;
@@ -344,8 +375,13 @@ public class Main {
     public static String criarLogin(Scanner input) throws EntradaIncorretaException {
         String login = input.next();
         // checar se nao tem espacos aqui e caracteres
-        if(login.contains(" ") && !login.matches("/^[A-Za-z0-9 ]+$/")){
-            throw new EntradaIncorretaException("Entrada incorreta, por favor nao utilizar espacos");
+        try {
+            if (login.contains(" ") && !login.matches("/^[A-Za-z0-9 ]+$/")) {
+                throw new EntradaIncorretaException("Entrada incorreta, por favor nao utilizar espacos");
+            }
+        } catch(EntradaIncorretaException e){
+            System.out.println(e.getMessage());
+            return criarLogin(input);
         }
         return login;
     }
@@ -354,16 +390,26 @@ public class Main {
         String nome = input.nextLine();
         // AJEITAR ISSO DAQUI DEPOIS PARA O BUG DO ESPAÇO
         // regex
-        if(!nome.matches("/^[A-Za-z0-9 ]+$/")){
-            throw new EntradaIncorretaException("Tem caractere especial no seu nome!");
+        try{
+            if(!nome.matches("/^[A-Za-z0-9 ]+$/")){
+                throw new EntradaIncorretaException("Tem caractere especial no seu nome!");
+            }
+        } catch (EntradaIncorretaException e){
+            System.out.println(e.getMessage());
+            return criarNome(input);
         }
         return nome;
     }
 
     public static String criarSenha(Scanner input) throws EntradaIncorretaException{
         String senha = input.next();
-        if(senha.contains(" ")){
-            throw new EntradaIncorretaException("Tem espaco na sua senha!");
+        try {
+            if (senha.contains(" ")) {
+                throw new EntradaIncorretaException("Tem espaco na sua senha!");
+            }
+        } catch (EntradaIncorretaException e){
+            System.out.println(e.getMessage());
+            return criarSenha(input);
         }
 
         return senha;
@@ -371,26 +417,17 @@ public class Main {
     }
     public static Conta addConta(Rede lista) throws EntradaIncorretaException {
         Scanner input = new Scanner(System.in);
-        System.out.println("Digite o login");
         String login,nome,senha;
-        try{
-            login = criarLogin(input);
-        } catch (EntradaIncorretaException e){
-            login = criarLogin(input);
-        }
-        System.out.println("Digite o nome");
-        try{
-            nome = criarNome(input);
-        }catch (EntradaIncorretaException e){
-            nome = criarNome(input);
-        }
-        System.out.println("Digite a senha");
-        try{
-            senha = criarSenha(input);
-        }catch (EntradaIncorretaException e){
-            senha = criarSenha(input);
-        }
 
+        System.out.println("Digite o login");
+        login = criarLogin(input);
+        System.out.println("Digite o nome");
+
+        nome = criarNome(input);
+
+        System.out.println("Digite a senha");
+
+        senha = criarSenha(input);
 
         Conta usuario = new Conta(nome,login,senha);
 
@@ -414,17 +451,24 @@ public class Main {
         System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
         int msg = input.nextInt();
 
-        String numCpf = "";
-        String bio = "";
-        String dtNascimento = "";
+        String numCpf;
+        String bio;
+        String dtNascimento;
 
         while(msg!=6){
             // switch-case aqui
+
             if (msg==1){
+                // [0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}
                 System.out.println("Digite o CPF");
                 input.nextLine();
-                numCpf = input.nextLine();
-                usuario.perfilConta.setNumCpfUsuario(numCpf);
+                try{
+                    numCpf = input.nextLine();
+                    usuario.perfilConta.setNumCpfUsuario(numCpf);
+                } catch (NumCpfInvalidoException e) {
+                    System.out.println(e.getMessage());
+                }
+
             }
             else if(msg==2){
 
@@ -436,13 +480,7 @@ public class Main {
             else if(msg==3){
                 System.out.println("Digite a data de nascimento no formato DD/MM/AAAA");
                 dtNascimento = input.next();
-                try{
-                    usuario.perfilConta.setDataNascimentoPerfil(dtNascimento);
-                } catch (ParseException e){
-                    System.out.println("Data de nascimento no formato errado!");
-                }
-
-
+                usuario.perfilConta.setDataNascimentoPerfil(dtNascimento);
             }
             System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
             msg = input.nextInt();
