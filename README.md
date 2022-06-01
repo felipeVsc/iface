@@ -23,3 +23,6 @@ Foi realizado a entrega do vídeo: https://www.youtube.com/watch?v=R8K-GsK2sPI n
 
 Versão final foi enviada no dia 10/05
 
+#### Entrega Exceptions
+
+Resto das exceções(fora as da sala) estão na branch exceptions. As feitas na sala estão na master.
