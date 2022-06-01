@@ -37,7 +37,7 @@ public class Perfil {
     }
 
     public void setNumCpfUsuario(String numCpfUsuarioNovo) throws NumCpfInvalidoException {
-        if(!numCpfUsuarioNovo.matches("\"[0-9]{3}\\\\.?[0-9]{3}\\\\.?[0-9]{3}\\\\-?[0-9]{2}\"")){
+        if(!numCpfUsuarioNovo.matches("[0-9]{3}\\.?[0-9]{3}\\.?[0-9]{3}\\-?[0-9]{2}")){
             throw new NumCpfInvalidoException("CPF INVALIDO");
         }else {
             this.numCpfUsuario = numCpfUsuarioNovo;

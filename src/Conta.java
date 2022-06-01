@@ -16,7 +16,7 @@ public class Conta extends ContaGeral implements Utils1{
     ArrayList<Comunidade> listaComunidadesAdmin;
     ArrayList<Comunidade> listaComunidadesMembro;
 
-    public Conta(String nome, String login, String senha){
+    public Conta(String nome, String login, String senha) throws ParseException {
         super(nome,login);
         this.senhaConta = senha;
         this.listaAmigos = new ArrayList<>();
@@ -24,7 +24,7 @@ public class Conta extends ContaGeral implements Utils1{
 
         this.listaComunidadesMembro = new ArrayList<>();
         this.listaPedidoAmizade = new ArrayList<>();
-        this.perfilConta = null;
+        setPerfil(null,"00/00/00",null);
 
 
     }

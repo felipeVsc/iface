@@ -1,25 +1,31 @@
 import excecoes.EntradaIncorretaException;
 import excecoes.NumCpfInvalidoException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws EntradaIncorretaException {
+    public static void main(String[] args) throws EntradaIncorretaException, ParseException {
 
         Rede listaUsuarios = new Rede();
 
         Scanner input = new Scanner(System.in);
         System.out.println("Bem-vindo.");
+        boolean continua = true;
         Conta usuarioOn = processoLogin(input,listaUsuarios);
-        while (true) {
+        while (continua) {
             if(usuarioOn==null){
                 System.out.println("Faça o login!");
                 usuarioOn = processoLogin(input,listaUsuarios);
             }
             else {
+                if(!listaUsuarios.listaUsuariosRede.contains(usuarioOn)){
+                    listaUsuarios.listaUsuariosRede.add(usuarioOn);
+                }
                 System.out.println("Dentro, digite as opcoes");
                 /*
                 System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo
@@ -28,7 +34,8 @@ public class Main {
                  | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade |
                 13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed | 15 - Remover membro comunidade");
                  */
-                System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade | 4 - Enviar Pedido de Amizade | 5 - Entrar em Comunidade\n6 - Criar Comunidade | 7 - Listar Pedidos de Amizade | 8 - Listar Informacoes\n9 - Terminar Conta | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade | 13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed | 15 - Remover membro comunidade\n | 16 - Requisicoes Comunidade");
+
+                System.out.println("0 - Sair da Conta | 1 - Modificar Perfil | 2 - Enviar Mensagem para Amigo\n3 - Enviar Mensagem para Comunidade | 4 - Enviar Pedido de Amizade | 5 - Entrar em Comunidade\n6 - Criar Comunidade | 7 - Listar Pedidos de Amizade | 8 - Listar Informacoes\n9 - Terminar Conta | 10 - Lista de Mensagens | 11 - Lista de Amigos\n12 - Mensagens Comunidade | 13 - Enviar mensagens no feed | 14 - Listar Mensagem Feed | 15 - Remover membro comunidade\n | 16 - Requisicoes Comunidade | 99 - sair do programa");
                 int opcao = input.nextInt();
                 switch (opcao) {
                     case 0:
@@ -39,6 +46,7 @@ public class Main {
                     case 1:
                         // modificar perfil
                         System.out.println("Modificar perfil");
+
                         modificarPerfil(usuarioOn);
                         break;
                     case 2:
@@ -294,6 +302,10 @@ public class Main {
                             System.out.println("Voce nao eh o administrador");
                         }
                         break;
+                    case 99:
+                        System.out.println("Tchau!");
+                        continua=false;
+                        break;
                 }
             }
 
@@ -327,12 +339,14 @@ public class Main {
     }
 
     public static Conta fazerLogin(Rede lista){
+
         Scanner input = new Scanner(System.in);
-        System.out.println("Digite o nome do usuario");
-        String login = input.next();
+        System.out.println("Digite o login do usuario");
+        String login = input.nextLine();
         System.out.println("Digite a senha");
-        String senha = input.next();
+        String senha = input.nextLine();
         Conta usuario;
+        System.out.println(login);
         if(lista.getConta(login)!=null){
             usuario = lista.getConta(login);
             if(usuario.getSenhaConta().equals(senha)){
@@ -351,31 +365,34 @@ public class Main {
 
     }
 
-    public static Conta processoLogin(Scanner input, Rede listaUsuarios) throws EntradaIncorretaException {
+    public static Conta processoLogin(Scanner input, Rede listaUsuarios) throws ParseException, EntradaIncorretaException {
         System.out.println("Deseja entrar ou se cadastrar? 1 - Logar | 2 - Criar conta");
-        int opcaoLogin = input.nextInt();
+        String opcaoLogin;
         Conta usuarioOn;
-        switch (opcaoLogin) {
-            case 1:
-                // logar na conta;
-                usuarioOn = fazerLogin(listaUsuarios);
-                return usuarioOn;
 
-            case 2:
-                // criar conta;
-                usuarioOn = addConta(listaUsuarios);
-                return usuarioOn;
 
-            default:
-                return null;
+        opcaoLogin = input.next();
 
+        if(opcaoLogin.equals("1")){
+            return fazerLogin(listaUsuarios);
         }
+        else if(opcaoLogin.equals("2")){
+            return addConta(listaUsuarios);
+        }
+        else {
+            System.out.println("Errado!");
+            return null;
+        }
+
+
+
     }
 
     public static String criarLogin(Scanner input) throws EntradaIncorretaException {
-        String login = input.next();
+        String login;
         // checar se nao tem espacos aqui e caracteres
         try {
+            login = input.nextLine();
             if (login.contains(" ") && !login.matches("/^[A-Za-z0-9 ]+$/")) {
                 throw new EntradaIncorretaException("Entrada incorreta, por favor nao utilizar espacos");
             }
@@ -387,15 +404,19 @@ public class Main {
     }
 
     public static String criarNome(Scanner input) throws EntradaIncorretaException{
-        String nome = input.nextLine();
+        String nome;
         // AJEITAR ISSO DAQUI DEPOIS PARA O BUG DO ESPAÇO
         // regex
         try{
-            if(!nome.matches("/^[A-Za-z0-9 ]+$/")){
+            nome = input.nextLine();
+            nome = nome.replace("\n", "").replace("\r", "");
+            if(!nome.matches("^[A-Za-z0-9-\\n ]+$")){
                 throw new EntradaIncorretaException("Tem caractere especial no seu nome!");
             }
         } catch (EntradaIncorretaException e){
+
             System.out.println(e.getMessage());
+            nome = null;
             return criarNome(input);
         }
         return nome;
@@ -415,14 +436,14 @@ public class Main {
         return senha;
 
     }
-    public static Conta addConta(Rede lista) throws EntradaIncorretaException {
+    public static Conta addConta(Rede lista) throws EntradaIncorretaException, ParseException {
         Scanner input = new Scanner(System.in);
         String login,nome,senha;
 
         System.out.println("Digite o login");
         login = criarLogin(input);
-        System.out.println("Digite o nome");
 
+        System.out.println("Digite o nome");
         nome = criarNome(input);
 
         System.out.println("Digite a senha");
@@ -430,14 +451,6 @@ public class Main {
         senha = criarSenha(input);
 
         Conta usuario = new Conta(nome,login,senha);
-
-        System.out.println("Deseja mudar o perfil? 1 - Sim | 2 - Nao");
-        int msgPerfil = input.nextInt();
-        if(msgPerfil==1){
-            modificarPerfil(usuario);
-        }
-
-        lista.addConta(usuario);
 
         return usuario;
 
@@ -460,7 +473,7 @@ public class Main {
 
             if (msg==1){
                 // [0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}
-                System.out.println("Digite o CPF");
+                System.out.println("Digite o CPF com apenas numeros");
                 input.nextLine();
                 try{
                     numCpf = input.nextLine();
