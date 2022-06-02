@@ -26,3 +26,7 @@ Versão final foi enviada no dia 10/05
 #### Entrega Exceptions
 
 Resto das exceções(fora as da sala) estão na branch exceptions. As feitas na sala estão na master.
+
+#### Code Smells
+
+Code Smells estão no arquivo codesmells.md
