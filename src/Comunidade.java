@@ -32,17 +32,7 @@ public class Comunidade {
     public void limparDadosUser(Conta usuario){
         setUsuarioAdminComunidade(null);
         this.listaUsuariosComunidade.remove(usuario);
-        ArrayList<Mensagem> msgRemover = new ArrayList<>();
-        for (Mensagem msg :
-                this.listaMsgComunidade) {
-            if(msg.getUsuarioEnvio().equals(usuario)){
-                msgRemover.add(msg);
-            }
-        }
-        for (Mensagem msgr: msgRemover
-             ) {
-            this.listaMsgComunidade.remove(msgr);
-        }
+        this.listaMsgComunidade.removeIf(msg -> msg.getUsuarioEnvio().equals(usuario));
     }
 
     public void pedirEntradaComunidade(Conta usuarioNovo){
@@ -58,10 +48,8 @@ public class Comunidade {
 
 
     public void removerMembroComunidade(Conta usuarioRemovido){
-
         this.listaUsuariosComunidade.remove(usuarioRemovido);
         this.listaMsgComunidade.removeIf(msgCom -> msgCom.getUsuarioEnvio().equals(usuarioRemovido));
-
     }
     public String getNomeComunidade() {
         return nomeComunidade;

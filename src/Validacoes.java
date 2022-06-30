@@ -10,6 +10,4 @@ public class Validacoes {
         return texto.matches("/^[A-Za-z0-9 ]+$/");
     }
 
-
-
 }

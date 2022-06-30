@@ -14,7 +14,6 @@ public class Perfil {
 
     public Perfil( String numCpfUsuario, String dataNascimento, String bio) throws ParseException {
         this.numCpfUsuario = numCpfUsuario;
-
         Date data = new SimpleDateFormat("dd/MM/yy").parse(dataNascimento);
         this.dataNascimentoPerfil = new SimpleDateFormat("MM-dd-yyyy").format(data);
         this.bioPerfil = bio;
@@ -27,10 +26,16 @@ public class Perfil {
         infoUsuarios.add(this.bioPerfil);
         infoUsuarios.add(this.dataNascimentoPerfil);
         return infoUsuarios;
-
-
     }
 
+    @Override
+    public String toString() {
+        return "Perfil{" +
+                "numCpfUsuario='" + numCpfUsuario + '\'' +
+                ", bioPerfil='" + bioPerfil + '\'' +
+                ", dataNascimentoPerfil='" + dataNascimentoPerfil + '\'' +
+                '}';
+    }
 
     public String getNumCpfUsuario() {
         return this.numCpfUsuario;
@@ -42,6 +47,7 @@ public class Perfil {
         }else {
             this.numCpfUsuario = numCpfUsuarioNovo;
         }
+
 
     }
 
@@ -67,4 +73,6 @@ public class Perfil {
         }
 
     }
+
+
 }

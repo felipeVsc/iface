@@ -31,10 +31,10 @@ public class ContaAdminComunidade extends ContaGeral{
     public void addMembroComunidade(Comunidade cmd){
         Scanner input = new Scanner(System.in);
         ArrayList<ContaGeral> contasAceitas = new ArrayList<>();
-        for (Conta usuario : this.pedidoEntrarComunidade
-        ) {
+        for (Conta usuario : this.pedidoEntrarComunidade) {
             String msg = "Usuario: "+usuario.getNomeConta()+" deseja entrar. 1 - Aceitar | 0 - Recusar\n";
             System.out.println(msg);
+
             int resultado = input.nextInt();
             if(resultado==1){
                 System.out.println("Aceito");
@@ -48,10 +48,11 @@ public class ContaAdminComunidade extends ContaGeral{
 
         this.comunidadeAdmin.listaUsuariosComunidade.addAll(contasAceitas);
 
-        limparListaPedidos();
+        this.pedidoEntrarComunidade.clear();
     }
 
     public void removerMembroComunidade(Conta usuario){
+
         if(this.comunidadeAdmin.listaUsuariosComunidade.contains(usuario)){
             this.comunidadeAdmin.listaUsuariosComunidade.remove(usuario);
         }
@@ -69,9 +70,4 @@ public class ContaAdminComunidade extends ContaGeral{
         }
     }
 
-    public void limparListaPedidos(){
-
-        this.pedidoEntrarComunidade.clear();
-    }
-    // addMembros, removerMembros
 }

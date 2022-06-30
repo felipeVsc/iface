@@ -1,3 +1,5 @@
+import excecoes.NumCpfInvalidoException;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -34,23 +36,24 @@ public class Conta extends ContaGeral implements Utils1{
         // Aqui remove as informacoes da conta
         removerPerfil();
         removerInfoLogin();
+
         this.listaComunidadesMembro.clear();
         this.listaPedidoAmizade.clear();
         this.listaMsgs.clear();
         this.listaAmigos.clear();
+
         // Aqui vai remover as informacoes que estao em outras contas
-        for (Conta user :rd.getListaUsuariosRede()) {
-            // Talvez tentar juntar as duas funcoes abaixo?
-            user.getListaPedidoAmizade().remove(contaUser);
-            user.getListaAmigos().remove(contaUser);
-            user.listaMsgs.removeIf(msg -> msg.getUsuarioEnvio().equals(contaUser));
-        }
+        rd.getListaUsuariosRede().forEach(usuario -> removerTodasInfoUsuarios(usuario,contaUser));
     }
 
+    public void removerTodasInfoUsuarios(Conta usuarioListaGeral,Conta contaUser){
+        usuarioListaGeral.getListaPedidoAmizade().remove(contaUser);
+        usuarioListaGeral.getListaAmigos().remove(contaUser);
+        usuarioListaGeral.listaMsgs.removeIf(msg -> msg.getUsuarioEnvio().equals(contaUser));
+    }
 
     public void removerPerfil(){
         this.perfilConta = null;
-
     }
 
     public void removerInfoLogin(){
@@ -81,8 +84,11 @@ public class Conta extends ContaGeral implements Utils1{
 
     public Comunidade criarComunidade(String nomeComunidade, String descCom){
         Comunidade novaComunidade = new Comunidade(nomeComunidade,descCom);
-        novaComunidade.setUsuarioAdminComunidade(new ContaAdminComunidade(getNomeConta(),getLoginConta(),novaComunidade));
+        ContaAdminComunidade adminComunidadeNova = new ContaAdminComunidade(this.nomeConta,this.loginConta,novaComunidade);
+
+        novaComunidade.setUsuarioAdminComunidade(adminComunidadeNova);
         this.listaComunidadesMembro.add(novaComunidade);
+
         return novaComunidade;
     }
 
@@ -104,23 +110,21 @@ public class Conta extends ContaGeral implements Utils1{
     public void entrarComunidade(Rede listaCom, Scanner input, Conta instancia){
         // listar todas as comunidades e depois voce diz qual que quer entrar
 
-        for (Comunidade cmd : listaCom.getListaComunidades()){
-            // mostrar todas
-            System.out.println(cmd.getNomeComunidade()); // falta aqui mostrar a descricao
-        }
+        listaCom.getListaComunidades().forEach(cmd -> System.out.println(cmd.getNomeComunidade()));
+
         System.out.println("Digite o nome da comunidade que voce deseja entrar");
         input.nextLine();
         String nomeComunidadeEntrar = input.nextLine();
+
         Comunidade comunidadeEntrar = retornarComunidadePeloNome(nomeComunidadeEntrar,listaCom);
         comunidadeEntrar.pedirEntradaComunidade(instancia);
-        // tratar aqui depois para o possivel erro do nome da comundiade
-
     }
     public void requisicoesAmizade(){
         Scanner input = new Scanner(System.in);
         ArrayList<Conta> aceitos = new ArrayList<>();
-        ArrayList<Conta> negados = new ArrayList<>();
+
         for (Conta usuario : this.listaPedidoAmizade){
+
             System.out.println(usuario.getNomeConta());
             System.out.println("Deseja aceitar? 1 - Sim | 2 - Nao");
             int aceite = 2;
@@ -132,19 +136,11 @@ public class Conta extends ContaGeral implements Utils1{
                 if(aceite==1){
                     aceitos.add(usuario);
                 }
-                else{
-                    negados.add(usuario);
-                }
             }
-
-
         }
 
-
         this.listaAmigos.addAll(aceitos);
-        this.listaPedidoAmizade.removeAll(aceitos);
-        this.listaPedidoAmizade.removeAll(negados);
-
+        this.listaPedidoAmizade.clear();
     }
 
     public void removerRequisicaoAmizade(Conta usuario){
@@ -182,13 +178,15 @@ public class Conta extends ContaGeral implements Utils1{
     public ArrayList<ArrayList> recuperarInfo(Rede rede, Conta c){
         ArrayList infoConta = new ArrayList<>();
 
-        infoConta.add(this.nomeConta);
-        infoConta.add(this.loginConta);
-        infoConta.add(this.senhaConta);
-        infoConta.add(this.perfilConta.getBioPerfil());
-        infoConta.add(this.perfilConta.getNumCpfUsuario());
-        infoConta.add(this.perfilConta.getDataNascimentoPerfil());
 
+//        infoConta.add(this.nomeConta);
+//        infoConta.add(this.loginConta);
+//        infoConta.add(this.senhaConta);
+//        infoConta.add(this.perfilConta.getBioPerfil());
+//        infoConta.add(this.perfilConta.getNumCpfUsuario());
+//        infoConta.add(this.perfilConta.getDataNascimentoPerfil());
+
+        infoConta.add(toString()); // melhorar essa parte
         ArrayList<ArrayList> infoGeral = new ArrayList<>();
 
         infoGeral.add(infoConta);
@@ -217,5 +215,69 @@ public class Conta extends ContaGeral implements Utils1{
 
     public void setSenhaConta(String senhaConta) {
         this.senhaConta = senhaConta;
+    }
+
+    // Modificar Perfil
+
+    public void modificarPerfil(){
+        Scanner input = new Scanner(System.in);
+        System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
+        int msg = input.nextInt();
+
+        while(msg!=6){
+
+            if (msg==1){
+                modificarCpfPerfil(input);
+            }
+            else if(msg==2){
+                modificarBioPerfil(input);
+            }
+            else if(msg==3){
+                modificarDataNascimentoPerfil(input);
+            }
+
+            System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
+            msg = input.nextInt();
+
+        }
+    }
+
+    public void modificarCpfPerfil(Scanner input){
+        System.out.println("Digite o CPF com apenas numeros");
+        input.nextLine();
+        try{
+            String numCpf = input.nextLine();
+            this.perfilConta.setNumCpfUsuario(numCpf);
+        } catch (NumCpfInvalidoException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void modificarDataNascimentoPerfil(Scanner input){
+        System.out.println("Digite a data de nascimento no formato DD/MM/AAAA");
+        String dtNascimento = input.next();
+        this.perfilConta.setDataNascimentoPerfil(dtNascimento);
+    }
+
+    public void modificarBioPerfil(Scanner input){
+        System.out.println("Digite a bio");
+        input.nextLine();
+        String bio = input.nextLine();
+        this.perfilConta.setBioPerfil(bio);
+    }
+
+    @Override
+    public String toString() {
+        return "Conta{" +
+                "senhaConta='" + senhaConta + '\'' +
+                ", perfilConta=" + perfilConta +
+                ", listaAmigos=" + listaAmigos +
+                ", listaPedidoAmizade=" + listaPedidoAmizade +
+                ", listaMsgs=" + listaMsgs +
+                ", listaComunidadesAdmin=" + listaComunidadesAdmin +
+                ", listaComunidadesMembro=" + listaComunidadesMembro +
+                ", nomeConta='" + nomeConta + '\'' +
+                ", loginConta='" + loginConta + '\'' +
+                '}';
     }
 }

@@ -1,14 +1,14 @@
 public class MensagemFeed extends Mensagem implements Mensagens<Rede>{
-    boolean privacidade; // true = todos, false = apenas amigos
+    PrivacidadeState privacidade; // true = todos, false = apenas amigos
 
-    public MensagemFeed(String mensagem, Conta usuarioEnvio, boolean privacidade) {
+    public MensagemFeed(String mensagem, Conta usuarioEnvio, PrivacidadeState privacidade) {
         super(mensagem,usuarioEnvio);
         this.privacidade = privacidade;
     }
     public boolean isPrivacidade() {
-        return privacidade;
+        return  this.privacidade.getPrivacidade();
     }
-    public void setPrivacidade(boolean privacidade) {
+    public void setPrivacidade(PrivacidadeState privacidade) {
         this.privacidade = privacidade;
     }
 
@@ -17,9 +17,10 @@ public class MensagemFeed extends Mensagem implements Mensagens<Rede>{
         c.feedNoticias.add((MensagemFeed) m);
     }
 
-
     @Override
     public String toString() {
+
         return this.getMensagem()+" por:"+this.getUsuarioEnvio().getNomeConta();
+
     }
 }
