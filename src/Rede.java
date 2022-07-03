@@ -57,7 +57,7 @@ public class Rede implements Utils1{
     }
 
     public void pedirAmizade(AmizadePedido pedidoAmizade) throws NullPointerException{
-
+        // O pedido em si
         Conta usuarioEnvioPedido = pedidoAmizade.getUsuarioEnvioPedido();
         Conta usuarioRecebedor = pedidoAmizade.getUsuarioRecebidorPedido();
 
@@ -67,6 +67,20 @@ public class Rede implements Utils1{
             usuarioRecebedor.listaPedidoAmizade.add(usuarioEnvioPedido);
         }
 
+    }
+
+    public void PedidoContasAmizade(Conta usuario, Scanner input){
+        // O ato de pedir, a ação que vai puxar o pedido
+        System.out.println("Para quem você deseja enviar o pedido de amizade?");
+        input.nextLine();
+        String nomeUsuarioRecebedor = input.nextLine();
+        try{
+            Conta usuarioRecebedorPedido = getConta(nomeUsuarioRecebedor);
+            AmizadePedido pedidoAmizade = new AmizadePedido(usuario,usuarioRecebedorPedido);
+            pedirAmizade(pedidoAmizade);
+        } catch (NullPointerException e){
+            System.out.println("Usuario nao existe");
+        }
     }
 
     public void enviarMensagemConta(Scanner input, Conta usuarioEnvio){
@@ -79,8 +93,12 @@ public class Rede implements Utils1{
         input.nextLine();
         String msg = input.nextLine();
 
-        MensagemAmizade mensagem = new MensagemAmizade(msg,usuarioEnvio);
-        mensagem.enviarMensagem(mensagem,usuarioReceptor);
+        try{
+            MensagemAmizade mensagem = new MensagemAmizade(msg,usuarioEnvio);
+            mensagem.enviarMensagem(mensagem,usuarioReceptor);
+        } catch (NullPointerException e){
+            System.out.println("Usuario nao existente");
+        }
 
     }
 
@@ -94,10 +112,12 @@ public class Rede implements Utils1{
         - Conta
         - Lista de mensagens em comunidades e amigos
          */
-//        contaUsuario.removerInfo(rd,contaUsuario);
-//        this.listaComunidades.forEach(cmd -> cmd.removerMembroComunidade(contaUsuario));
-//        this.feedNoticias.removeIf(msgFeed -> msgFeed.getUsuarioEnvio().equals(contaUsuario));
-//        this.listaUsuariosRede.remove(contaUsuario);
+        contaUsuario.removerInfo(rd,contaUsuario);
+        this.listaComunidades.listaComunidades.forEach(cmd -> cmd.removerMembroComunidade(contaUsuario));
+        this.feedNoticias.feedNoticia.removeIf(msgFeed -> msgFeed.getUsuarioEnvio().equals(contaUsuario));
+        this.listaUsuariosRede.remove(contaUsuario);
+        System.out.println("Usuario Removido");
+
     }
 
     @Override

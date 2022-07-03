@@ -19,15 +19,6 @@ public class Perfil {
         this.bioPerfil = bio;
 
     }
-
-//    public ArrayList<String> retrieveAllPerfil(){
-//        ArrayList<String> infoUsuarios = new ArrayList<>();
-//        infoUsuarios.add(this.numCpfUsuario);
-//        infoUsuarios.add(this.bioPerfil);
-//        infoUsuarios.add(this.dataNascimentoPerfil);
-//        return infoUsuarios;
-//    }
-
     @Override
     public String toString() {
         return "Perfil{" +

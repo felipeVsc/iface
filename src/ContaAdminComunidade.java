@@ -67,6 +67,8 @@ public class ContaAdminComunidade extends ContaGeral{
         }
     }
 
+
+
     public void removerPedidoMembro(Conta usuario){
         if(pedidoEntrarComunidade.contains(usuario)){
             pedidoEntrarComunidade.remove(usuario);

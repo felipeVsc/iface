@@ -55,6 +55,7 @@ public class Feed {
 
     public void listarMensagens(Conta usuarioRequisicao){
         // listar as mensagens, tomando cuidado para saber se quem enviou é amigo seu ou nao
+        System.out.println("Feed de Noticias:");
         for (MensagemFeed msgNoFeedMostrar :
                 this.feedNoticia) {
             if(!msgNoFeedMostrar.isPrivacidade()){

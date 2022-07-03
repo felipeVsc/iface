@@ -120,6 +120,7 @@ public class Conta extends ContaGeral implements Utils1{
         comunidadeEntrar.pedirEntradaComunidade(instancia);
     }
     public void requisicoesAmizade(){
+        System.out.println("Os seus pedidos de amizade são:");
         Scanner input = new Scanner(System.in);
         ArrayList<Conta> aceitos = new ArrayList<>();
 
@@ -209,6 +210,7 @@ public class Conta extends ContaGeral implements Utils1{
     // Modificar Perfil
 
     public void modificarPerfil(){
+        System.out.println("Modificar perfil");
         Scanner input = new Scanner(System.in);
         System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
         int msg = input.nextInt();
