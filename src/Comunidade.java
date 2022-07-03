@@ -87,6 +87,7 @@ public class Comunidade {
     public String toString() {
         return "Comunidade{" +
                 "nomeComunidade='" + nomeComunidade + '\'' +
+                "descComunidade='" + descComunidade + '\'' +
                 '}';
     }
 }

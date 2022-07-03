@@ -1,89 +1,34 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Rede implements Utils1{
 
     ArrayList<Conta> listaUsuariosRede;
-    ArrayList<Comunidade> listaComunidades;
-    ArrayList<MensagemFeed> feedNoticias;
+    ComunidadeGerenciamento listaComunidades;
+    Feed feedNoticias;
 
     public Rede(){
         this.listaUsuariosRede = new ArrayList<>();
-        this.listaComunidades = new ArrayList<>();
-        this.feedNoticias = new ArrayList<>();
+        this.listaComunidades = new ComunidadeGerenciamento();
+        this.feedNoticias = new Feed(null);
     }
 
-    public void addMsgFeed(String msg, Conta usuarioEnvio, PrivacidadeState privacidade, Rede rede){
-        MensagemFeed novaMsgFeed = new MensagemFeed(msg,usuarioEnvio,privacidade);
-        novaMsgFeed.enviarMensagem(novaMsgFeed,rede);
-    }
 
-    public void removerMsgUsuario(Conta usuarioRemocao){
-        this.feedNoticias.removeIf(msgfeednt -> msgfeednt.getUsuarioEnvio().equals(usuarioRemocao));
-    }
-
-    public void listarMensagens(Conta usuarioRequisicao){
-        // listar as mensagens, tomando cuidado para saber se quem enviou é amigo seu ou nao
-        for (MensagemFeed msgNoFeedMostrar :
-                this.feedNoticias) {
-            if(!msgNoFeedMostrar.isPrivacidade()){
-                printarMensagemPrivada(msgNoFeedMostrar,usuarioRequisicao);
-            }
-            System.out.println(msgNoFeedMostrar);
-        }
-    }
-
-    public void printarMensagemPrivada(MensagemFeed msgNoFeedMostrar, Conta usuarioRequisicao){
-        Conta usuarioEnvio = msgNoFeedMostrar.getUsuarioEnvio();
-        if(usuarioEnvio.getListaAmigos().contains(usuarioRequisicao) || usuarioEnvio.equals(usuarioRequisicao)){
-            System.out.println(msgNoFeedMostrar);
-        }
-    }
-
-    public ArrayList<MensagemFeed> getFeedNoticias() {
+    public Feed getFeedNoticias() {
         return feedNoticias;
     }
 
-    public void setFeedNoticias(ArrayList<MensagemFeed> feedNoticias) {
+    public void setFeedNoticias(Feed feedNoticias) {
         this.feedNoticias = feedNoticias;
     }
 
-    public String getAdminComunidade(Comunidade comunidade){
 
-        for (Comunidade cmd : listaComunidades){
-
-            if(comunidade==cmd){
-                return cmd.getUsuarioAdminComunidade();
-            }
-
-        }
-
-        return null;
-    }
-
-    public Comunidade getComunidadePeloNome(String nome){
-        for (Comunidade cmd : this.listaComunidades){
-            if(cmd.getNomeComunidade().equals(nome)){
-                return cmd;
-            }
-        }
-        return null;
-    }
-
-
-    public void addComunidade(Comunidade novaComunidade){
-        this.listaComunidades.add(novaComunidade);
-    }
-
-    public void removerComunidade(Comunidade nomeComunidade){
-        this.listaComunidades.remove(nomeComunidade);
-    }
-
-    public ArrayList<Comunidade> getListaComunidades() {
+    public ComunidadeGerenciamento getListaComunidades() {
         return listaComunidades;
     }
 
-    public void setListaComunidades(ArrayList<Comunidade> listaComunidades) {
+    public void setListaComunidades(ComunidadeGerenciamento listaComunidades) {
         this.listaComunidades = listaComunidades;
     }
 
@@ -107,18 +52,16 @@ public class Rede implements Utils1{
         return null;
     }
 
-
     public void addConta(Conta contaUsuario){
         this.listaUsuariosRede.add(contaUsuario);
     }
-
 
     public void pedirAmizade(AmizadePedido pedidoAmizade) throws NullPointerException{
 
         Conta usuarioEnvioPedido = pedidoAmizade.getUsuarioEnvioPedido();
         Conta usuarioRecebedor = pedidoAmizade.getUsuarioRecebidorPedido();
 
-        if(!usuarioEnvioPedido.listaPedidoAmizade.contains(usuarioRecebedor)){
+        if(usuarioEnvioPedido.listaPedidoAmizade.contains(usuarioRecebedor)){
             System.out.println("Voces ja sao amigos!");
         }else{
             usuarioRecebedor.listaPedidoAmizade.add(usuarioEnvioPedido);
@@ -126,11 +69,20 @@ public class Rede implements Utils1{
 
     }
 
-    public void enviarMensagemConta(String msg, Conta usuarioEnvio, Conta usuarioRec){
-        MensagemAmizade mensagem = new MensagemAmizade(msg,usuarioEnvio);
-        mensagem.enviarMensagem(mensagem,usuarioRec);
-    }
+    public void enviarMensagemConta(Scanner input, Conta usuarioEnvio){
+        // ver questao de throw de erro aqui
+        System.out.println("Digite o nome do usuario que deseja enviar a mensagem");
+        String nomeUsuarioReceptor = input.next();
+        Conta usuarioReceptor = getConta(nomeUsuarioReceptor);
 
+        System.out.println("Digite a mensagem");
+        input.nextLine();
+        String msg = input.nextLine();
+
+        MensagemAmizade mensagem = new MensagemAmizade(msg,usuarioEnvio);
+        mensagem.enviarMensagem(mensagem,usuarioReceptor);
+
+    }
 
     @Override
     public void removerInfo(Rede rd,Conta contaUsuario){
@@ -142,22 +94,24 @@ public class Rede implements Utils1{
         - Conta
         - Lista de mensagens em comunidades e amigos
          */
-        contaUsuario.removerInfo(rd,contaUsuario);
-        this.listaComunidades.forEach(cmd -> cmd.removerMembroComunidade(contaUsuario));
-        this.feedNoticias.removeIf(msgFeed -> msgFeed.getUsuarioEnvio().equals(contaUsuario));
-        this.listaUsuariosRede.remove(contaUsuario);
+//        contaUsuario.removerInfo(rd,contaUsuario);
+//        this.listaComunidades.forEach(cmd -> cmd.removerMembroComunidade(contaUsuario));
+//        this.feedNoticias.removeIf(msgFeed -> msgFeed.getUsuarioEnvio().equals(contaUsuario));
+//        this.listaUsuariosRede.remove(contaUsuario);
     }
 
     @Override
     public ArrayList<Mensagem> recuperarInfo(Rede rede, Conta c) {
-       ArrayList<Mensagem> msgFeedConta = new ArrayList<>();
-       for (Mensagem msgFeed :
-               this.feedNoticias) {
-           if (msgFeed.getUsuarioEnvio().equals(c)) {
-               msgFeedConta.add(msgFeed);
-           }
-
-       }
-        return msgFeedConta;
+//       ArrayList<Mensagem> msgFeedConta = new ArrayList<>();
+//       for (Mensagem msgFeed :
+//               this.feedNoticias) {
+//           if (msgFeed.getUsuarioEnvio().equals(c)) {
+//               msgFeedConta.add(msgFeed);
+//           }
+//
+//       }
+//        return msgFeedConta;
+//    }
+        return null;
     }
 }

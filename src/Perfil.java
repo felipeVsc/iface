@@ -2,7 +2,7 @@ import excecoes.NumCpfInvalidoException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
 import java.util.Date;
 
 public class Perfil {
@@ -20,13 +20,13 @@ public class Perfil {
 
     }
 
-    public ArrayList<String> retrieveAllPerfil(){
-        ArrayList<String> infoUsuarios = new ArrayList<>();
-        infoUsuarios.add(this.numCpfUsuario);
-        infoUsuarios.add(this.bioPerfil);
-        infoUsuarios.add(this.dataNascimentoPerfil);
-        return infoUsuarios;
-    }
+//    public ArrayList<String> retrieveAllPerfil(){
+//        ArrayList<String> infoUsuarios = new ArrayList<>();
+//        infoUsuarios.add(this.numCpfUsuario);
+//        infoUsuarios.add(this.bioPerfil);
+//        infoUsuarios.add(this.dataNascimentoPerfil);
+//        return infoUsuarios;
+//    }
 
     @Override
     public String toString() {

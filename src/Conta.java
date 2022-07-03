@@ -98,7 +98,7 @@ public class Conta extends ContaGeral implements Utils1{
 
 
     public Comunidade retornarComunidadePeloNome(String nome,Rede listaCom){
-        for (Comunidade cmd : listaCom.getListaComunidades()){
+        for (Comunidade cmd : listaCom.listaComunidades.getListaComunidades()){
             // mostrar todas
             if(cmd.getNomeComunidade().equals(nome)){
                 return cmd;
@@ -110,7 +110,7 @@ public class Conta extends ContaGeral implements Utils1{
     public void entrarComunidade(Rede listaCom, Scanner input, Conta instancia){
         // listar todas as comunidades e depois voce diz qual que quer entrar
 
-        listaCom.getListaComunidades().forEach(cmd -> System.out.println(cmd.getNomeComunidade()));
+        listaCom.listaComunidades.getListaComunidades().forEach(cmd -> System.out.println(cmd.getNomeComunidade()));
 
         System.out.println("Digite o nome da comunidade que voce deseja entrar");
         input.nextLine();
@@ -132,6 +132,8 @@ public class Conta extends ContaGeral implements Utils1{
                 aceite = input.nextInt();
             } catch (InputMismatchException e){
                 System.out.println("Digite uma das opcoes: 1 - Sim | 2 - Nao");
+                requisicoesAmizade();
+
             }finally {
                 if(aceite==1){
                     aceitos.add(usuario);
@@ -172,24 +174,11 @@ public class Conta extends ContaGeral implements Utils1{
         return this.listaPedidoAmizade;
     }
 
-
-
     @Override
     public ArrayList<ArrayList> recuperarInfo(Rede rede, Conta c){
-        ArrayList infoConta = new ArrayList<>();
 
-
-//        infoConta.add(this.nomeConta);
-//        infoConta.add(this.loginConta);
-//        infoConta.add(this.senhaConta);
-//        infoConta.add(this.perfilConta.getBioPerfil());
-//        infoConta.add(this.perfilConta.getNumCpfUsuario());
-//        infoConta.add(this.perfilConta.getDataNascimentoPerfil());
-
-        infoConta.add(toString()); // melhorar essa parte
         ArrayList<ArrayList> infoGeral = new ArrayList<>();
 
-        infoGeral.add(infoConta);
         infoGeral.add(this.listaPedidoAmizade);
         infoGeral.add(this.listaAmigos);
         infoGeral.add(this.listaComunidadesMembro);
@@ -200,8 +189,8 @@ public class Conta extends ContaGeral implements Utils1{
 
 
 
-    public ArrayList<String> getPerfil(){
-        return perfilConta.retrieveAllPerfil();
+    public String getPerfil(){
+        return perfilConta.toString();
     }
 
     public void setPerfil(String numCpfUsuario,  String dataNascimento, String bio) throws ParseException{
@@ -266,16 +255,12 @@ public class Conta extends ContaGeral implements Utils1{
         this.perfilConta.setBioPerfil(bio);
     }
 
+    // as listas irao com os id e nao como string resolver isso
     @Override
     public String toString() {
         return "Conta{" +
                 "senhaConta='" + senhaConta + '\'' +
-                ", perfilConta=" + perfilConta +
-                ", listaAmigos=" + listaAmigos +
-                ", listaPedidoAmizade=" + listaPedidoAmizade +
-                ", listaMsgs=" + listaMsgs +
-                ", listaComunidadesAdmin=" + listaComunidadesAdmin +
-                ", listaComunidadesMembro=" + listaComunidadesMembro +
+                ", perfilConta=" + getPerfil() +
                 ", nomeConta='" + nomeConta + '\'' +
                 ", loginConta='" + loginConta + '\'' +
                 '}';

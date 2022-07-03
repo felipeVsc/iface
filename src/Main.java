@@ -1,6 +1,6 @@
 import excecoes.EntradaIncorretaException;
+
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -16,6 +16,7 @@ public class Main {
         boolean continua = true;
         Conta usuarioOn = sistemaLogin.processoLogin(input,listaUsuarios);
 
+        RecuperacaoInfo recuperacaoInfo = new RecuperacaoInfo(usuarioOn,listaUsuarios);
         while (continua) {
             if(usuarioOn==null){
                 System.out.println("Faça o login!");
@@ -45,18 +46,13 @@ public class Main {
                     case 1:
                         // modificar perfil
                         System.out.println("Modificar perfil");
-
                         usuarioOn.modificarPerfil();
                         break;
+
                     case 2:
                         // enviar msg para amigo
-                        System.out.println("Digite o nome do usuario que deseja enviar a mensagem");
-                        String nomeUsuarioReceptor = input.next();
-                        System.out.println("Digite a mensagem");
-                        input.nextLine();
-                        String msg = input.nextLine();
                         try{
-                            listaUsuarios.enviarMensagemConta(msg,usuarioOn,listaUsuarios.getConta(nomeUsuarioReceptor));
+                            listaUsuarios.enviarMensagemConta(input,usuarioOn);
                         } catch(NullPointerException e){
                             System.out.println("Usuario nao existente");
                             break;
@@ -65,22 +61,18 @@ public class Main {
                         break;
                     case 3:
                         // enviar msg para comunidade
-                        for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
-                            System.out.println(cmd.getNomeComunidade());
-                        }
+                        recuperacaoInfo.printarComunidadesMembro();
+                        recuperacaoInfo.printarComunidadesAdmin();
+
                         System.out.println("Qual o nome da comunidade que você deseja enviar a mensagem?");
                         input.nextLine();
 
                         String nomeComunidade = input.nextLine();
                         System.out.println("Qual a mensagem?");
                         String msgCom = input.nextLine();
-                        Comunidade cmdParaEnviar = null;
-                        // get comunidade pelo nome
-                        for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
-                            if(cmd.getNomeComunidade().equals(nomeComunidade)){
-                                cmdParaEnviar = cmd;
-                            }
-                        }
+
+                        Comunidade cmdParaEnviar = listaUsuarios.listaComunidades.getComunidadePeloNome(nomeComunidade);
+
                         if(cmdParaEnviar!=null){
                             cmdParaEnviar.enviarMsg(msgCom,usuarioOn,cmdParaEnviar);
                         }
@@ -110,7 +102,7 @@ public class Main {
                         input.nextLine();
                         String nomeComNova = input.nextLine();
                         try{
-                            Comunidade cmdEntrada = listaUsuarios.getComunidadePeloNome(nomeComNova);
+                            Comunidade cmdEntrada = listaUsuarios.listaComunidades.getComunidadePeloNome(nomeComNova);
                             if (cmdEntrada==null){
                                 throw new EntradaIncorretaException("Comunidade nao existe");
                             } else {
@@ -124,16 +116,9 @@ public class Main {
                         break;
                     case 6:
                         // criar comunidade
-                        System.out.println("Digite o nome da comunidade que deseja criar");
-                        input.nextLine();
-                        String nomeDaComunidade = input.nextLine();
-                        System.out.println("Digite a descricao da comunidade");
-                        input.nextLine();
-                        String descricaoCom = input.nextLine();
-                        Comunidade novaCom = usuarioOn.criarComunidade(nomeDaComunidade,descricaoCom);
-                        novaCom.criarAdminComunidade(usuarioOn,novaCom);
-                        listaUsuarios.addComunidade(novaCom);
+                        listaUsuarios.listaComunidades.criarComunidade(input,usuarioOn);
                         break;
+
                     case 7:
                         // Listar pedido de amizades
                         System.out.println("Os seus pedidos de amizade são:");
@@ -141,51 +126,9 @@ public class Main {
                         break;
                     case 8:
                         // Listar Informacoes
-                        ArrayList<ArrayList> info = usuarioOn.recuperarInfo(listaUsuarios,usuarioOn);
-                        for (ArrayList lista: info) {
-                            if(lista.size()!=0){
+                        // acho que isso aqui vai quebrar
 
-                                for(int x=0;x<lista.size();x++){
-
-                                    if(lista.get(0) instanceof Conta){
-                                        System.out.println("Amizades");
-
-                                        Conta cnt = (Conta) lista.get(x);
-                                        String aceito = usuarioOn.getListaAmigos().contains(cnt) ? "Amigo":"Pedido";
-                                        String resposta = cnt.getNomeConta()+" status: "+aceito;
-                                        System.out.println(resposta);
-
-
-                                    }
-                                    else if( lista.get(0) instanceof Comunidade){
-                                        System.out.println("Comunidades");
-
-                                        Comunidade cnt = (Comunidade) lista.get(x);
-
-                                        String adminSimNao = cnt.getUsuarioAdminComunidade().equals(usuarioOn.getNomeConta()) ? "Admin":"Membro";
-                                        String msfDefault = cnt.getNomeComunidade()+"  status: "+adminSimNao;
-                                        System.out.println(msfDefault);
-
-                                    }
-                                    else if(lista.get(0) instanceof Mensagem){
-                                        System.out.println("Mensagens");
-
-                                        Mensagem cnt = (Mensagem) lista.get(x);
-//                                        String mensagemPadrao = cnt.getMensagem()+" by: "+cnt.getUsuarioEnvio().getNomeConta();
-                                        System.out.println(cnt.toString());
-                                    }
-                                    else{
-                                        String entradas = (String) lista.get(x);
-                                        System.out.println(entradas);
-                                    }
-
-                                }
-
-
-                            }
-
-                        }
-
+                        recuperacaoInfo.retrieveAll();
                         break;
                     case 9:
                         // Terminar conta
@@ -197,39 +140,28 @@ public class Main {
                     case 10:
                         // lista de msgs
                         System.out.println("Suas mensagens:");
-                        for (Mensagem mensagemInterna :
-                                usuarioOn.getListaMsgs()) {
-//                            String defaultMsg = mensagemInterna.getUsuarioEnvio().getNomeConta()+" enviou: "+mensagemInterna.getMensagem();
-                            System.out.println(mensagemInterna.toString());
-                        }
+                        recuperacaoInfo.printarMensagens();
                         break;
                     case 11:
                         // lista de amigos
                         System.out.println("Seus amigos:");
-                        for (Conta contaAmigoInterno : usuarioOn.getListaAmigos()){
-                            System.out.println(contaAmigoInterno.getNomeConta());
-                        }
+                        recuperacaoInfo.printarAmizades();
                         break;
                     case 12:
                         // mensagem das comunidades
-                        for (Comunidade cmd : usuarioOn.getListaComunidadesMembro()){
-                            System.out.println(cmd.getNomeComunidade());
-                        }
+                        recuperacaoInfo.printarComunidadesAdmin();
+                        recuperacaoInfo.printarComunidadesMembro();
+
                         System.out.println("Qual o nome da comunidade que você deseja ver as mensagens?");
                         input.nextLine();
                         String nomeComunidadeMensagem = input.nextLine();
                         try{
-                            Comunidade comunidadeMsg = listaUsuarios.getComunidadePeloNome(nomeComunidadeMensagem);
+                            Comunidade comunidadeMsg = listaUsuarios.listaComunidades.getComunidadePeloNome(nomeComunidadeMensagem);
                             if (comunidadeMsg==null){
                                 throw new EntradaIncorretaException("Comunidade nao existe");
                             }
                             else{
-                                for (Mensagem mensagemComunidadeVer : comunidadeMsg.getListaMsgComunidade()
-                                ) {
-
-//                            String msgDefaultComunidade = mensagemComunidadeVer.getUsuarioEnvio().getNomeConta()+"  enviou: "+mensagemComunidadeVer.getMensagem();
-                                    System.out.println(mensagemComunidadeVer.toString());
-                                }
+                                comunidadeMsg.getListaMsgComunidade().forEach(mensagem -> System.out.println(mensagem.toString()));
                             }
                         } catch (EntradaIncorretaException e) {
                             System.out.println(e.getMessage());
@@ -240,27 +172,20 @@ public class Main {
                     case 13:
                         // Mandar mensagen no feed de noticias
 
-                        System.out.println("Digite a mensagem que voce deseja enviar");
-                        input.nextLine();
-                        String msgFeedNoticiasEnvio = input.nextLine();
-                        System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
-
-                        PrivacidadeState privMensagemFeed = gerarPrivacidade(input);
-                        listaUsuarios.addMsgFeed(msgFeedNoticiasEnvio,usuarioOn,privMensagemFeed,listaUsuarios);
-                        System.out.println("Mensagem Enviada");
+                        listaUsuarios.feedNoticias.addMsgFeed(input,usuarioOn, listaUsuarios);
                         break;
                     case 14:
                         // Listar Feed de Noticias
                         System.out.println("Feed de Noticias:");
-                        listaUsuarios.listarMensagens(usuarioOn);
+                        listaUsuarios.feedNoticias.listarMensagens(usuarioOn);
                         break;
                     case 15:
                         // remover membro da comunidade
                         System.out.println("Remocao de membro; Digite o nome da comunidade");
                         String nomeComunidadeRemocao = input.next();
-                        Comunidade comunidadeRemocao = null;
+                        Comunidade comunidadeRemocao;
                         try{
-                            comunidadeRemocao = listaUsuarios.getComunidadePeloNome(nomeComunidadeRemocao);
+                            comunidadeRemocao = listaUsuarios.listaComunidades.getComunidadePeloNome(nomeComunidadeRemocao);
                             if(comunidadeRemocao==null){
                                 throw new EntradaIncorretaException("Comunidade nao existe");
                             }
@@ -270,20 +195,12 @@ public class Main {
                             break;
                         }
 
-                        if(comunidadeRemocao.getUsuarioAdminComunidade().equals(usuarioOn.getNomeConta())){
-                            // ele eh o admin
-                            System.out.println("Digite o nome do usuario a ser removido");
-                            String usuarioRemover = input.next();
-                            Conta contaRemover = listaUsuarios.getConta(usuarioRemover);
-                            if(comunidadeRemocao.listaUsuariosComunidade.contains(contaRemover)){
-                                // remover
-                                comunidadeRemocao.listaUsuariosComunidade.remove(contaRemover);
-                                contaRemover.listaComunidadesMembro.remove(comunidadeRemocao);
+                        boolean ehAdminComunidade = listaUsuarios.listaComunidades.ehAdminDaComunidade(usuarioOn,comunidadeRemocao);
 
-                            }
-                            else{
-                                System.out.println("usuario nao existe");
-                            }
+
+                        if(ehAdminComunidade){
+                            // ele eh o admin
+                            comunidadeRemocao.usuarioAdminComunidade.removerMembroComunidade(listaUsuarios,input);
                         }else{
                             System.out.println("Voce nao eh o administrador dessa comunidade");
                         }
@@ -293,10 +210,12 @@ public class Main {
                         System.out.println("Pedidos | Digite o nome da comunidade");
                         input.nextLine();
                         String nomeComunidadeAdmin = input.nextLine();
-                        Comunidade comunidadeAdmin = ehAdminComunidade(nomeComunidadeAdmin,usuarioOn,listaUsuarios);
-                        if(comunidadeAdmin!=null){
+
+                        Comunidade comunidadePedidosEntrada = listaUsuarios.listaComunidades.getComunidadePeloNome(nomeComunidadeAdmin);
+                        boolean ehComunidadeAdmin = listaUsuarios.listaComunidades.ehAdminDaComunidade(usuarioOn,comunidadePedidosEntrada);
+                        if(ehComunidadeAdmin){
                             // listar os pedidos
-                            comunidadeAdmin.usuarioAdminComunidade.addMembroComunidade(comunidadeAdmin);
+                            comunidadePedidosEntrada.usuarioAdminComunidade.addMembroComunidade();
                         }
                         else{
                             System.out.println("Voce nao eh o administrador");
@@ -312,29 +231,5 @@ public class Main {
 
         }
 
-    }
-
-
-    public static PrivacidadeState gerarPrivacidade(Scanner input) throws EntradaIncorretaException{
-        int priv = input.nextInt();
-        try{
-            if(priv!=1 && priv!=2) {
-                throw new EntradaIncorretaException("Entrada incorreta, tente novamente");
-
-            }
-        } catch (EntradaIncorretaException e) {
-            System.out.println(e.getMessage());
-                return gerarPrivacidade(input);
-        }
-        // Instanciar aqui a nova?
-        return new PrivacidadeState(priv);
-    }
-
-    public static Comunidade ehAdminComunidade(String nomecmd, ContaGeral usuario, Rede listaUser){
-        Comunidade comunidadeAdmin = listaUser.getComunidadePeloNome(nomecmd);
-        if(comunidadeAdmin.getUsuarioAdminComunidade().equals(usuario.getNomeConta())){
-            return comunidadeAdmin;
-        }
-        return null;
     }
 }
