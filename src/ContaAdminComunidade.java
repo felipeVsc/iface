@@ -56,6 +56,7 @@ public class ContaAdminComunidade extends ContaGeral{
         System.out.println("Digite o nome do usuario a ser removido");
         String usuarioRemover = input.next();
         Conta contaRemover = listaUsuarios.getConta(usuarioRemover);
+
         if(this.comunidadeAdmin.listaUsuariosComunidade.contains(contaRemover)){
             // remover
             this.comunidadeAdmin.listaUsuariosComunidade.remove(contaRemover);
