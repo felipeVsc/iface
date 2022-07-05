@@ -1,66 +1,84 @@
 import excecoes.EntradaIncorretaException;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Login {
+public class Login extends Menu {
 
     Conta usuario;
+    Scanner input;
 
     public Login(){
+        this.input = new Scanner(System.in);
+    }
+
+
+    @Override
+    public RedeSocial executar(RedeSocial redesocial) throws ParseException, EntradaIncorretaException {
+        Conta nova = processoLogin(redesocial.listaUsuarios);
+        this.usuario = nova;
+        redesocial.setUsuario(nova);
+        ArrayList<Conta> listaUsuariosNaRede = redesocial.listaUsuarios.listaUsuariosRede;
+        if(!listaUsuariosNaRede.contains(nova)){
+            redesocial.listaUsuarios.listaUsuariosRede.add(nova);
+        }
+        redesocial.listaUsuarios.usuario = nova;
+        redesocial.listaUsuarios.listaComunidades.usuario = nova;
+        redesocial.recuperacaoInfo.usuario = nova;
+
+        return redesocial;
 
     }
 
-    public Conta processoLogin(Scanner input, Rede listaUsuarios) throws ParseException, EntradaIncorretaException {
+    public Conta processoLogin(Rede listaUsuarios) throws ParseException, EntradaIncorretaException {
 
         System.out.println("Deseja entrar ou se cadastrar? 1 - Logar | 2 - Criar conta");
         String opcaoLogin;
 
-        opcaoLogin = input.next();
+        opcaoLogin = this.input.next();
 
         if(opcaoLogin.equals("1")){
             // Fazer o login
-            return fazerLogin(listaUsuarios, input);
+            Conta lgd = fazerLogin(listaUsuarios, input);
+            return this.usuario;
         }
         else if(opcaoLogin.equals("2")){
             // Criar a conta
             return addConta(input);
         }
         else {
-            System.out.println("Errado!");
-            return null;
+            System.out.println("Errado! tente novamente");
+            processoLogin(listaUsuarios);
         }
 
+        return null;
     }
-
 
     public Conta fazerLogin(Rede lista, Scanner input){
 
         System.out.println("Digite o login do usuario");
-        String login = input.next();
+        String login = this.input.next();
 
         System.out.println("Digite a senha");
-        String senha = input.next();
+        String senha = this.input.next();
 
-        if(lista.getConta(login)==null) {
-            System.out.println("Usuario nao existente");
-            return null;
+        Conta usuarioQuerendoLogar = lista.getConta(login);
+        this.usuario = usuarioQuerendoLogar;
+        if(usuarioQuerendoLogar==null || (!usuarioQuerendoLogar.getSenhaConta().equals(senha))){
+            System.out.println("Erro tente novamente");
+            fazerLogin(lista,input);
+        }else{
+            setUsuario(usuarioQuerendoLogar);
+            return usuarioQuerendoLogar;
         }
-
-        this.usuario = lista.getConta(login);
-
-        if(!this.usuario.getSenhaConta().equals(senha)){
-            System.out.println("senha incorreta");
-            return null;
-        }
-
-        return this.usuario;
+        return null;
     }
 
     public String criarLogin(Scanner input) throws EntradaIncorretaException {
         String login;
         try {
-            login = input.next();
+            login = this.input.next();
             if (login.contains(" ") && !login.matches("/^[A-Za-z0-9 ]+$/")) {
                 throw new EntradaIncorretaException("Entrada incorreta, por favor nao utilizar espacos");
             }
@@ -76,7 +94,7 @@ public class Login {
         // AJEITAR ISSO DAQUI DEPOIS PARA O BUG DO ESPAÇO
         // regex
         try{
-            nome = input.next();
+            nome = this.input.next();
             nome = nome.replace("\n", "").replace("\r", "");
             if(!nome.matches("^[A-Za-z0-9-\\n ]+$")){
                 throw new EntradaIncorretaException("Tem caractere especial no seu nome!");
@@ -90,7 +108,7 @@ public class Login {
     }
 
     public String criarSenha(Scanner input) throws EntradaIncorretaException{
-        String senha = input.next();
+        String senha = this.input.next();
         try {
             if (senha.contains(" ")) {
                 throw new EntradaIncorretaException("Tem espaco na sua senha!");
@@ -128,5 +146,6 @@ public class Login {
     public void setUsuario(Conta usuario) {
         this.usuario = usuario;
     }
+
 
 }

@@ -27,6 +27,7 @@ public class Conta extends ContaGeral implements Utils1{
         this.listaComunidadesMembro = new ArrayList<>();
         this.listaPedidoAmizade = new ArrayList<>();
         setPerfil(null,"00/00/00",null);
+        this.listaComunidadesAdmin = new ArrayList<>();
 
 
     }
@@ -88,7 +89,7 @@ public class Conta extends ContaGeral implements Utils1{
 
         novaComunidade.setUsuarioAdminComunidade(adminComunidadeNova);
         this.listaComunidadesMembro.add(novaComunidade);
-
+        this.listaComunidadesAdmin.add(novaComunidade);
         return novaComunidade;
     }
 
@@ -119,7 +120,7 @@ public class Conta extends ContaGeral implements Utils1{
         Comunidade comunidadeEntrar = retornarComunidadePeloNome(nomeComunidadeEntrar,listaCom);
         comunidadeEntrar.pedirEntradaComunidade(instancia);
     }
-    public void requisicoesAmizade(){
+    public boolean requisicoesAmizade(){
         System.out.println("Os seus pedidos de amizade são:");
         Scanner input = new Scanner(System.in);
         ArrayList<Conta> aceitos = new ArrayList<>();
@@ -144,6 +145,8 @@ public class Conta extends ContaGeral implements Utils1{
 
         this.listaAmigos.addAll(aceitos);
         this.listaPedidoAmizade.clear();
+
+        return true;
     }
 
     public void removerRequisicaoAmizade(Conta usuario){
@@ -209,7 +212,7 @@ public class Conta extends ContaGeral implements Utils1{
 
     // Modificar Perfil
 
-    public void modificarPerfil(){
+    public boolean modificarPerfil(){
         System.out.println("Modificar perfil");
         Scanner input = new Scanner(System.in);
         System.out.println("O que voce deseja modificar? 1 - CPF | 2 - Bio | 3 - Data de Nascimento  | 6 - Nada");
@@ -231,6 +234,7 @@ public class Conta extends ContaGeral implements Utils1{
             msg = input.nextInt();
 
         }
+        return true;
     }
 
     public void modificarCpfPerfil(Scanner input){

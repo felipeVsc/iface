@@ -6,14 +6,28 @@ public class Rede implements Utils1{
 
     ArrayList<Conta> listaUsuariosRede;
     ComunidadeGerenciamento listaComunidades;
+
     Feed feedNoticias;
+    Scanner input = new Scanner(System.in);
+    Conta usuario;
+
 
     public Rede(){
-        this.listaUsuariosRede = new ArrayList<>();
+        this.listaUsuariosRede = new ArrayList<Conta>();
         this.listaComunidades = new ComunidadeGerenciamento();
-        this.feedNoticias = new Feed(null);
+        this.feedNoticias = new Feed();
     }
 
+    public Menu finalizar(){
+        System.out.println("Tchauzinho!");
+        return null;
+    }
+
+    public void gerarInicio(RedeSocial redesocial){
+        this.listaComunidades = new ComunidadeGerenciamento(redesocial);
+        this.feedNoticias = new Feed(redesocial);
+        this.usuario = redesocial.getUsuario();
+    }
 
     public Feed getFeedNoticias() {
         return feedNoticias;
@@ -42,10 +56,10 @@ public class Rede implements Utils1{
 
     public Conta getConta(String nomeUsuario){
 
-        for (Conta contas : listaUsuariosRede){
 
+        for (Conta contas : listaUsuariosRede){
             if(contas.getNomeConta().equals(nomeUsuario)){
-               return contas;
+                return contas;
             }
 
         }
@@ -69,21 +83,23 @@ public class Rede implements Utils1{
 
     }
 
-    public void PedidoContasAmizade(Conta usuario, Scanner input){
+    public boolean PedidoContasAmizade(){
         // O ato de pedir, a ação que vai puxar o pedido
         System.out.println("Para quem você deseja enviar o pedido de amizade?");
-        input.nextLine();
-        String nomeUsuarioRecebedor = input.nextLine();
+
+        String nomeUsuarioRecebedor = input.next();
         try{
             Conta usuarioRecebedorPedido = getConta(nomeUsuarioRecebedor);
             AmizadePedido pedidoAmizade = new AmizadePedido(usuario,usuarioRecebedorPedido);
             pedirAmizade(pedidoAmizade);
         } catch (NullPointerException e){
             System.out.println("Usuario nao existe");
+            return false;
         }
+        return true;
     }
 
-    public void enviarMensagemConta(Scanner input, Conta usuarioEnvio){
+    public boolean enviarMensagemConta(){
         // ver questao de throw de erro aqui
         System.out.println("Digite o nome do usuario que deseja enviar a mensagem");
         String nomeUsuarioReceptor = input.next();
@@ -94,12 +110,14 @@ public class Rede implements Utils1{
         String msg = input.nextLine();
 
         try{
-            MensagemAmizade mensagem = new MensagemAmizade(msg,usuarioEnvio);
+            MensagemAmizade mensagem = new MensagemAmizade(msg,usuario);
             mensagem.enviarMensagem(mensagem,usuarioReceptor);
         } catch (NullPointerException e){
             System.out.println("Usuario nao existente");
+            return false;
         }
 
+        return true;
     }
 
     @Override

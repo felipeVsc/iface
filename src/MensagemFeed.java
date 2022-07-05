@@ -15,6 +15,7 @@ public class MensagemFeed extends Mensagem implements Mensagens<Rede>{
     @Override
     public void enviarMensagem(Mensagem m, Rede c){
         c.feedNoticias.feedNoticia.add((MensagemFeed) m);
+
     }
 
     @Override

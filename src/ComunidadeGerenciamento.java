@@ -3,11 +3,29 @@ import excecoes.EntradaIncorretaException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ComunidadeGerenciamento{
+public class ComunidadeGerenciamento {
     ArrayList<Comunidade> listaComunidades;
+    Scanner input = new Scanner(System.in);
 
-    public ComunidadeGerenciamento() {
+    RedeSocial redesocial;
+    Conta usuario;
+    Rede listaUsuarios;
+    RecuperacaoInfo recuperacaoInfo;
+
+    public ComunidadeGerenciamento(RedeSocial redesocial) {
+        this.redesocial = redesocial;
+        this.listaComunidades = redesocial.listaUsuarios.listaComunidades.getListaComunidades();
+        this.usuario = redesocial.getUsuario();
+        this.listaUsuarios = redesocial.getListaUsuarios();
+        this.recuperacaoInfo = redesocial.getRecuperacaoInfo();
+    }
+
+    public ComunidadeGerenciamento(){
         this.listaComunidades = new ArrayList<>();
+    }
+
+    public void setRedesocial(RedeSocial redesocial) {
+        this.redesocial = redesocial;
     }
 
     public ArrayList<Comunidade> getListaComunidades() {
@@ -38,23 +56,27 @@ public class ComunidadeGerenciamento{
         return null;
     }
 
-    public void criarComunidade(Scanner input, Conta usuario){
+    public RedeSocial criarComunidade(){
         System.out.println("Digite o nome da comunidade que deseja criar");
-        input.nextLine();
 
-        String nomeDaComunidade = input.nextLine();
+        String nomeDaComunidade = input.next();
         System.out.println("Digite a descricao da comunidade");
-
         input.nextLine();
         String descricaoCom = input.nextLine();
+        Comunidade novaCom = this.usuario.criarComunidade(nomeDaComunidade,descricaoCom);
+        addComunidade(novaCom,this.usuario);
 
-        Comunidade novaCom = usuario.criarComunidade(nomeDaComunidade,descricaoCom);
-        addComunidade(novaCom,usuario);
+
+        return redesocial;
 
     }
 
     public void addComunidade(Comunidade novaComunidade, Conta usuarioAdmin){
         this.listaComunidades.add(novaComunidade);
+        this.redesocial.listaUsuarios.listaComunidades.listaComunidades.add(novaComunidade);
+
+
+
         novaComunidade.criarAdminComunidade(usuarioAdmin,novaComunidade);
     }
 
@@ -66,12 +88,14 @@ public class ComunidadeGerenciamento{
         return comunidadeAdmin.usuarioAdminComunidade.getNomeConta().equals(usuarioAdmin.getNomeConta());
     }
 
-    public void enviarMensagemParaComunidade(Conta usuario, Scanner input){
-        System.out.println("Qual o nome da comunidade que você deseja enviar a mensagem?");
-        input.nextLine();
+    public boolean enviarMensagemParaComunidade(){
 
-        String nomeComunidade = input.nextLine();
+        recuperacaoInfo.printarComunidadesMembro();
+
+        System.out.println("Qual o nome da comunidade que você deseja enviar a mensagem?");
+        String nomeComunidade = input.next();
         System.out.println("Qual a mensagem?");
+        input.nextLine();
         String msgCom = input.nextLine();
 
         Comunidade cmdParaEnviar = getComunidadePeloNome(nomeComunidade);
@@ -81,13 +105,15 @@ public class ComunidadeGerenciamento{
         }
         else{
             System.out.println("Voce nao faz parte dessa comunidade");
+            return false;
         }
+
+        return true;
     }
 
-    public void entrarComunidade(Conta usuario, Scanner input) throws EntradaIncorretaException{
+    public boolean entrarComunidade() throws EntradaIncorretaException{
         System.out.println("Digite o nome da comunidade que deseja entrar");
-        input.nextLine();
-        String nomeComNova = input.nextLine();
+        String nomeComNova = input.next();
         try{
             Comunidade cmdEntrada = getComunidadePeloNome(nomeComNova);
             if (cmdEntrada==null){
@@ -98,10 +124,13 @@ public class ComunidadeGerenciamento{
             }
         } catch (EntradaIncorretaException e){
             System.out.println(e.getMessage());
+            return false;
         }
+
+        return true;
     }
 
-    public void remocaoMembros(Conta usuario, Scanner input, Rede listaUsuarios){
+    public boolean remocaoMembros(){
         System.out.println("Remocao de membro; Digite o nome da comunidade");
         String nomeComunidadeRemocao = input.next();
         Comunidade comunidadeRemocao = null;
@@ -113,7 +142,7 @@ public class ComunidadeGerenciamento{
 
         } catch (EntradaIncorretaException e){
             System.out.println(e.getMessage());
-
+            return false;
         }
 
         boolean ehAdminComunidade = ehAdminDaComunidade(usuario,comunidadeRemocao);
@@ -121,14 +150,16 @@ public class ComunidadeGerenciamento{
             comunidadeRemocao.usuarioAdminComunidade.removerMembroComunidade(listaUsuarios,input);
         }else{
             System.out.println("Voce nao eh o administrador dessa comunidade");
+            return false;
         }
 
+        return true;
     }
 
-    public void listarPedidosEntradaComunidade(Conta usuario, Scanner input){
+    public boolean listarPedidosEntradaComunidade(){
         System.out.println("Pedidos | Digite o nome da comunidade");
-        input.nextLine();
-        String nomeComunidadeAdmin = input.nextLine();
+
+        String nomeComunidadeAdmin = input.next();
 
         Comunidade comunidadePedidosEntrada = getComunidadePeloNome(nomeComunidadeAdmin);
         boolean ehComunidadeAdmin = ehAdminDaComunidade(usuario,comunidadePedidosEntrada);
@@ -138,7 +169,9 @@ public class ComunidadeGerenciamento{
         }
         else{
             System.out.println("Voce nao eh o administrador");
+            return false;
         }
+        return true;
     }
 
 
