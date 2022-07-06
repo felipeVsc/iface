@@ -25,8 +25,14 @@ Versão final foi enviada no dia 10/05
 
 #### Entrega Exceptions
 
-Resto das exceções(fora as da sala) estão na branch exceptions. As feitas na sala estão na master.
+Resto das exceções(fora as da sala) estão na branch exceptions, que pode ser acessada [aqui](https://github.com/felipevsc/javap2/tree/exceptions). As feitas na sala estão na master.
 
 #### Code Smells
 
-Code Smells estão no arquivo codesmells.md
+Code Smells estão no arquivo codesmells.md, que pode ser acessado por esse [link](https://github.com/felipeVsc/javap2/blob/master/codesmells.md)
+
+#### Clean Code
+
+O projeto final, que contém já padrões de projeto e a refatoração dos Code Smells se encontra na branch **cleancode**, que pode ser acessada [aqui](https://github.com/felipevsc/javap2/tree/cleancode)
+
+No readme dessa branch estarão as soluções para os code smells, que podem ser acessadas por esse [link](https://github.com/felipeVsc/javap2/blob/cleancode/README.md)
