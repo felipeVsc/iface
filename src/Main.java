@@ -14,15 +14,24 @@ public class Main {
         RedeSocial redesocial = new RedeSocial();
 
         while(true){
-            System.out.println("digite numers 1 - conta | 2 - comunidade | 3 - listar informacoes | 4 - sair da conta");
-
             MenuFactory menu = new MenuFactory(redesocial);
-            int entrada = input.nextInt();
+            int entrada;
+
+            if(menu.redesocial.usuario.getNomeConta().equals("removido")){
+                entrada = 4;
+
+            }
+            else{
+                System.out.println("Menu Principal ->  1 - Conta | 2 - Comunidade | 3 - Listar Informacoes | 4 - sair da conta | 99 - Finalizar Programa");
+                entrada = input.nextInt();
+            }
+
             if(entrada==99){
                 break;
             }
-            Menu teste = (Menu) menu.getMenu(entrada);
-            redesocial = teste.executar(menu.redesocial);
+
+            Menu execMenu = (Menu) menu.getMenu(entrada);
+            redesocial = execMenu.executar(menu.redesocial);
 
         }
 

@@ -1,16 +1,11 @@
-
-import excecoes.EntradaIncorretaException;
-
-import java.text.ParseException;
-
 import java.util.HashMap;
 
 public class MenuFactory{
 
-
     HashMap<Integer,Object> menuMapa = new HashMap<>();
     RedeSocial redesocial;
-    public MenuFactory(RedeSocial redesocial) throws ParseException, EntradaIncorretaException {
+
+    public MenuFactory(RedeSocial redesocial) {
 
         this.redesocial = redesocial;
         this.redesocial.listaUsuarios.gerarInicio(redesocial);
