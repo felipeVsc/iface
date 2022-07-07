@@ -38,7 +38,9 @@ public class Feed {
 
     public MensagemFeed addMsgFeed() throws EntradaIncorretaException {
         System.out.println("Digite a mensagem que voce deseja enviar");
-        String mensagemFeedEnvio = input.next();
+
+        String mensagemFeedEnvio = input.nextLine();
+        input.nextLine();
         System.out.println("Qual a privacidade? 1 - Todos | 2 - Amigos");
 
         PrivacidadeState privacidade = gerarPrivacidade();
